@@ -89,7 +89,18 @@ class TestBackendAPI(unittest.TestCase):
         # Delete all created test entities
         for entity_type, ids in self.created_ids.items():
             for entity_id in ids:
-                requests.delete(f"{BASE_URL}/{entity_type}/{entity_id}")
+                try:
+                    requests.delete(f"{BASE_URL}/{entity_type}/{entity_id}")
+                except Exception as e:
+                    print(f"Error deleting {entity_type}/{entity_id}: {e}")
+
+    # Helper method to print response for debugging
+    def print_response(self, response):
+        print(f"Status Code: {response.status_code}")
+        try:
+            print(f"Response: {response.json()}")
+        except:
+            print(f"Response: {response.text}")
 
     # ===== Events API Tests =====
     
@@ -98,17 +109,19 @@ class TestBackendAPI(unittest.TestCase):
         # Create event
         response = requests.post(f"{BASE_URL}/events", json=self.test_event)
         self.assertEqual(response.status_code, 200)
-        event = response.json()
-        self.created_ids["events"].append(event["id"])
+        event_data = response.json()
+        self.assertIn("id", event_data)
+        event_id = event_data["id"]
+        self.created_ids["events"].append(event_id)
         
         # Get event by ID
-        response = requests.get(f"{BASE_URL}/events/{event['id']}")
+        response = requests.get(f"{BASE_URL}/events/{event_id}")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["title"], self.test_event["title"])
         
         # Update event
         update_data = {"title": "Updated Test Festival"}
-        response = requests.put(f"{BASE_URL}/events/{event['id']}", json=update_data)
+        response = requests.put(f"{BASE_URL}/events/{event_id}", json=update_data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["title"], "Updated Test Festival")
         
@@ -118,20 +131,23 @@ class TestBackendAPI(unittest.TestCase):
         self.assertIsInstance(response.json(), list)
         
         # Delete event
-        response = requests.delete(f"{BASE_URL}/events/{event['id']}")
+        response = requests.delete(f"{BASE_URL}/events/{event_id}")
         self.assertEqual(response.status_code, 200)
-        self.created_ids["events"].remove(event["id"])
+        self.created_ids["events"].remove(event_id)
         
         # Verify deletion
-        response = requests.get(f"{BASE_URL}/events/{event['id']}")
+        response = requests.get(f"{BASE_URL}/events/{event_id}")
         self.assertEqual(response.status_code, 404)
     
     def test_events_filters(self):
         """Test filtering and searching for Events API"""
         # Create test event
         response = requests.post(f"{BASE_URL}/events", json=self.test_event)
-        event = response.json()
-        self.created_ids["events"].append(event["id"])
+        self.assertEqual(response.status_code, 200)
+        event_data = response.json()
+        self.assertIn("id", event_data)
+        event_id = event_data["id"]
+        self.created_ids["events"].append(event_id)
         
         # Test category filter
         response = requests.get(f"{BASE_URL}/events?category={self.test_event['category']}")
@@ -151,16 +167,19 @@ class TestBackendAPI(unittest.TestCase):
         """Test booking an event"""
         # Create test event
         response = requests.post(f"{BASE_URL}/events", json=self.test_event)
-        event = response.json()
-        self.created_ids["events"].append(event["id"])
+        self.assertEqual(response.status_code, 200)
+        event_data = response.json()
+        self.assertIn("id", event_data)
+        event_id = event_data["id"]
+        self.created_ids["events"].append(event_id)
         
         # Book event
-        response = requests.post(f"{BASE_URL}/events/{event['id']}/book")
+        response = requests.post(f"{BASE_URL}/events/{event_id}/book")
         self.assertEqual(response.status_code, 200)
         self.assertIn("message", response.json())
         
         # Verify attendees count increased
-        response = requests.get(f"{BASE_URL}/events/{event['id']}")
+        response = requests.get(f"{BASE_URL}/events/{event_id}")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["attendees"], 1)
     
