@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Query
 from typing import List, Optional
-from models.event import Event, EventCreate, EventUpdate
+from ..models.event import Event, EventCreate, EventUpdate
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from database import get_database
 from datetime import datetime
