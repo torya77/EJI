@@ -80,6 +80,9 @@ class TestBackendAPI(unittest.TestCase):
             "posts": [],
             "users": []
         }
+        
+        # Print the base URL for debugging
+        print(f"Testing API at: {BASE_URL}")
 
     def tearDown(self):
         """Teardown for tests - clean up test data"""
