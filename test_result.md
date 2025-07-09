@@ -294,16 +294,10 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Events API"
-    - "Restaurants API"
-    - "Products API"
-    - "Posts API"
-    - "Translation API"
-    - "Users API"
-    - "Admin API"
-    - "Providers API"
-  stuck_tasks: []
-  test_all: true
+    - "Provider Registration Form"
+  stuck_tasks:
+    - "Provider Registration Form"
+  test_all: false
   test_priority: "high_first"
 
 agent_communication:
