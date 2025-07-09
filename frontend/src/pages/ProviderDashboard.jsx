@@ -1,0 +1,460 @@
+import React, { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Badge } from '../components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
+import { 
+  BarChart3, 
+  Calendar, 
+  DollarSign, 
+  Users, 
+  TrendingUp, 
+  MapPin,
+  Clock,
+  Star,
+  MessageCircle,
+  Settings,
+  Plus,
+  Edit,
+  Eye,
+  Trash2,
+  Filter,
+  Download
+} from 'lucide-react';
+
+const ProviderDashboard = () => {
+  const [activeTab, setActiveTab] = useState('overview');
+
+  // Mock data for provider dashboard
+  const stats = {
+    revenue: { value: 45230, growth: +12, currency: 'DZD' },
+    bookings: { value: 28, growth: +8 },
+    rating: { value: 4.8, total: 156 },
+    clients: { value: 342, growth: +15 }
+  };
+
+  const recentBookings = [
+    {
+      id: 'BK001',
+      service: 'Visite Guidée Casbah',
+      client: 'Sarah Martin',
+      date: '2025-07-20',
+      time: '10:00',
+      status: 'confirmé',
+      amount: 1800,
+      guests: 2
+    },
+    {
+      id: 'BK002',
+      service: 'Restaurant Le Tantra',
+      client: 'Ahmed Bensaid',
+      date: '2025-07-21',
+      time: '19:30',
+      status: 'en_attente',
+      amount: 3200,
+      guests: 4
+    },
+    {
+      id: 'BK003',
+      service: 'Excursion Sahara',
+      client: 'Marie Dubois',
+      date: '2025-08-05',
+      time: '06:00',
+      status: 'confirmé',
+      amount: 15000,
+      guests: 2
+    }
+  ];
+
+  const services = [
+    {
+      id: 'SV001',
+      name: 'Visite Guidée de la Casbah',
+      type: 'Événement',
+      price: 1800,
+      status: 'actif',
+      bookings: 23,
+      rating: 4.9
+    },
+    {
+      id: 'SV002',
+      name: 'Restaurant Le Tantra',
+      type: 'Restaurant',
+      price: 2500,
+      status: 'actif',
+      bookings: 45,
+      rating: 4.7
+    },
+    {
+      id: 'SV003',
+      name: 'Atelier Poterie',
+      type: 'Expérience',
+      price: 3500,
+      status: 'pause',
+      bookings: 12,
+      rating: 4.8
+    }
+  ];
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'confirmé': return 'bg-green-100 text-green-800';
+      case 'en_attente': return 'bg-yellow-100 text-yellow-800';
+      case 'annulé': return 'bg-red-100 text-red-800';
+      case 'actif': return 'bg-green-100 text-green-800';
+      case 'pause': return 'bg-gray-100 text-gray-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('fr-FR').format(amount);
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 pt-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">
+            Tableau de bord Prestataire
+          </h1>
+          <p className="text-gray-600 mt-2">
+            Gérez vos services et suivez vos performances
+          </p>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Revenus ce mois</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {formatCurrency(stats.revenue.value)} {stats.revenue.currency}
+                  </p>
+                  <p className="text-xs text-green-600 flex items-center mt-1">
+                    <TrendingUp className="w-3 h-3 mr-1" />
+                    +{stats.revenue.growth}% vs mois dernier
+                  </p>
+                </div>
+                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                  <DollarSign className="w-6 h-6 text-green-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Réservations</p>
+                  <p className="text-2xl font-bold text-gray-900">{stats.bookings.value}</p>
+                  <p className="text-xs text-green-600 flex items-center mt-1">
+                    <TrendingUp className="w-3 h-3 mr-1" />
+                    +{stats.bookings.growth} cette semaine
+                  </p>
+                </div>
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <Calendar className="w-6 h-6 text-blue-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Note moyenne</p>
+                  <p className="text-2xl font-bold text-gray-900">{stats.rating.value}</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {stats.rating.total} avis clients
+                  </p>
+                </div>
+                <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                  <Star className="w-6 h-6 text-yellow-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Clients totaux</p>
+                  <p className="text-2xl font-bold text-gray-900">{stats.clients.value}</p>
+                  <p className="text-xs text-green-600 flex items-center mt-1">
+                    <TrendingUp className="w-3 h-3 mr-1" />
+                    +{stats.clients.growth}% ce mois
+                  </p>
+                </div>
+                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                  <Users className="w-6 h-6 text-purple-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Main Content */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
+            <TabsTrigger value="bookings">Réservations</TabsTrigger>
+            <TabsTrigger value="services">Mes services</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          </TabsList>
+
+          {/* Overview Tab */}
+          <TabsContent value="overview" className="space-y-6">
+            <div className="grid lg:grid-cols-2 gap-6">
+              {/* Recent Bookings */}
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <div>
+                    <CardTitle>Réservations récentes</CardTitle>
+                    <CardDescription>Vos dernières réservations</CardDescription>
+                  </div>
+                  <Button variant="outline" size="sm">
+                    Voir tout
+                  </Button>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {recentBookings.slice(0, 3).map(booking => (
+                      <div key={booking.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between mb-1">
+                            <h4 className="font-medium text-gray-900">{booking.service}</h4>
+                            <Badge className={`text-xs ${getStatusColor(booking.status)}`}>
+                              {booking.status.replace('_', ' ')}
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-gray-600">{booking.client}</p>
+                          <div className="flex items-center space-x-4 text-xs text-gray-500 mt-1">
+                            <span className="flex items-center">
+                              <Calendar className="w-3 h-3 mr-1" />
+                              {booking.date}
+                            </span>
+                            <span className="flex items-center">
+                              <Clock className="w-3 h-3 mr-1" />
+                              {booking.time}
+                            </span>
+                            <span className="flex items-center">
+                              <Users className="w-3 h-3 mr-1" />
+                              {booking.guests}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="text-right ml-4">
+                          <div className="font-semibold text-green-600">
+                            {formatCurrency(booking.amount)} DZD
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Performance Chart */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Performance du mois</CardTitle>
+                  <CardDescription>Revenus et réservations</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-64 bg-gradient-to-br from-green-50 to-blue-50 rounded-lg flex items-center justify-center">
+                    <div className="text-center">
+                      <BarChart3 className="w-16 h-16 text-green-600 mx-auto mb-4" />
+                      <p className="text-gray-600">Graphique des performances</p>
+                      <p className="text-sm text-gray-500">Données en temps réel</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Bookings Tab */}
+          <TabsContent value="bookings" className="space-y-6">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle>Gestion des réservations</CardTitle>
+                  <CardDescription>Suivez et gérez toutes vos réservations</CardDescription>
+                </div>
+                <div className="flex space-x-2">
+                  <Button variant="outline" size="sm">
+                    <Filter className="w-4 h-4 mr-2" />
+                    Filtrer
+                  </Button>
+                  <Button variant="outline" size="sm">
+                    <Download className="w-4 h-4 mr-2" />
+                    Exporter
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {recentBookings.map(booking => (
+                    <div key={booking.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="font-semibold text-gray-900">{booking.service}</h4>
+                          <Badge className={`${getStatusColor(booking.status)}`}>
+                            {booking.status.replace('_', ' ')}
+                          </Badge>
+                        </div>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600">
+                          <div>
+                            <span className="font-medium">Client:</span> {booking.client}
+                          </div>
+                          <div>
+                            <span className="font-medium">Date:</span> {booking.date}
+                          </div>
+                          <div>
+                            <span className="font-medium">Heure:</span> {booking.time}
+                          </div>
+                          <div>
+                            <span className="font-medium">Invités:</span> {booking.guests}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-4 ml-6">
+                        <div className="text-right">
+                          <div className="font-bold text-green-600">
+                            {formatCurrency(booking.amount)} DZD
+                          </div>
+                          <div className="text-xs text-gray-500">#{booking.id}</div>
+                        </div>
+                        <div className="flex space-x-1">
+                          <Button variant="ghost" size="sm">
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                          <Button variant="ghost" size="sm">
+                            <MessageCircle className="w-4 h-4" />
+                          </Button>
+                          <Button variant="ghost" size="sm">
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Services Tab */}
+          <TabsContent value="services" className="space-y-6">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle>Mes services</CardTitle>
+                  <CardDescription>Gérez vos offres et services</CardDescription>
+                </div>
+                <Button className="bg-green-600 hover:bg-green-700">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Ajouter un service
+                </Button>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {services.map(service => (
+                    <Card key={service.id} className="hover:shadow-lg transition-shadow">
+                      <CardContent className="p-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <Badge variant="outline">{service.type}</Badge>
+                          <Badge className={`${getStatusColor(service.status)}`}>
+                            {service.status}
+                          </Badge>
+                        </div>
+                        
+                        <h3 className="font-semibold text-gray-900 mb-2">{service.name}</h3>
+                        
+                        <div className="space-y-2 mb-4">
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-gray-600">Prix:</span>
+                            <span className="font-semibold">{formatCurrency(service.price)} DZD</span>
+                          </div>
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-gray-600">Réservations:</span>
+                            <span className="font-semibold">{service.bookings}</span>
+                          </div>
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-gray-600">Note:</span>
+                            <div className="flex items-center">
+                              <Star className="w-4 h-4 text-yellow-500 fill-current mr-1" />
+                              <span className="font-semibold">{service.rating}</span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="flex space-x-2">
+                          <Button variant="outline" size="sm" className="flex-1">
+                            <Edit className="w-4 h-4 mr-1" />
+                            Modifier
+                          </Button>
+                          <Button variant="outline" size="sm">
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                          <Button variant="outline" size="sm">
+                            <Settings className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Analytics Tab */}
+          <TabsContent value="analytics" className="space-y-6">
+            <div className="grid lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Revenus mensuels</CardTitle>
+                  <CardDescription>Évolution de vos revenus</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-64 bg-gradient-to-br from-green-50 to-blue-50 rounded-lg flex items-center justify-center">
+                    <div className="text-center">
+                      <BarChart3 className="w-16 h-16 text-green-600 mx-auto mb-4" />
+                      <p className="text-gray-600">Graphique des revenus</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Taux de satisfaction</CardTitle>
+                  <CardDescription>Notes et avis clients</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-64 bg-gradient-to-br from-yellow-50 to-orange-50 rounded-lg flex items-center justify-center">
+                    <div className="text-center">
+                      <Star className="w-16 h-16 text-yellow-600 mx-auto mb-4" />
+                      <p className="text-gray-600">Satisfaction client</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+        </Tabs>
+      </div>
+    </div>
+  );
+};
+
+export default ProviderDashboard;
