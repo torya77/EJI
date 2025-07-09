@@ -123,7 +123,7 @@ const Header = () => {
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56 z-50" align="end" forceMount>
+                <DropdownMenuContent className="w-56" align="end">
                   <DropdownMenuItem>
                     <User className="mr-2 h-4 w-4" />
                     <span>Profil Voyageur</span>
