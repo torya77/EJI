@@ -720,12 +720,68 @@ const ProviderRegistration = () => {
               Suivant
             </Button>
           ) : (
-            <Button onClick={submitRegistration} className="bg-green-600 hover:bg-green-700">
-              <CheckCircle className="w-4 h-4 mr-2" />
-              Soumettre Inscription
+            <Button 
+              onClick={submitRegistration} 
+              className="bg-green-600 hover:bg-green-700"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Inscription en cours...
+                </>
+              ) : (
+                <>
+                  <CheckCircle className="w-4 h-4 mr-2" />
+                  Soumettre Inscription
+                </>
+              )}
             </Button>
           )}
         </div>
+
+        {/* Success Message */}
+        {submitSuccess && (
+          <Card className="mt-8 border-green-200 bg-green-50">
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-3">
+                <CheckCircle className="w-8 h-8 text-green-600" />
+                <div>
+                  <h3 className="font-semibold text-green-900">Inscription soumise avec succès !</h3>
+                  <p className="text-green-800 mt-1">
+                    Votre demande d'inscription a été reçue. Vous recevrez une réponse sous 48h.
+                  </p>
+                  <p className="text-sm text-green-700 mt-2">
+                    Un email de confirmation vous sera envoyé à l'adresse : {formData.email}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Error Message */}
+        {submitError && (
+          <Card className="mt-8 border-red-200 bg-red-50">
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-3">
+                <AlertCircle className="w-8 h-8 text-red-600" />
+                <div>
+                  <h3 className="font-semibold text-red-900">Erreur lors de l'inscription</h3>
+                  <p className="text-red-800 mt-1">{submitError}</p>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="mt-2"
+                    onClick={() => setSubmitError(null)}
+                  >
+                    Réessayer
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Process Timeline */}
         <Card className="mt-8">
