@@ -15,6 +15,8 @@ import LanguageSelector from './LanguageSelector';
 import TranslatorModal from './translator/TranslatorModal';
 import CurrencyConverter from './CurrencyConverter';
 import EJIServicesMenu from './EJIServicesMenu';
+import InteractiveGuide from './InteractiveGuide';
+import MobileMenu from './MobileMenu';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const Header = () => {
@@ -23,6 +25,8 @@ const Header = () => {
   const [isTranslatorOpen, setIsTranslatorOpen] = useState(false);
   const [isCurrencyConverterOpen, setIsCurrencyConverterOpen] = useState(false);
   const [isServicesMenuOpen, setIsServicesMenuOpen] = useState(false);
+  const [isGuideOpen, setIsGuideOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { t } = useLanguage();
   
   const navItems = [
@@ -144,7 +148,12 @@ const Header = () => {
               </DropdownMenu>
 
               {/* Mobile Menu */}
-              <Button variant="ghost" size="sm" className="lg:hidden p-1">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="lg:hidden p-1"
+                onClick={() => setIsMobileMenuOpen(true)}
+              >
                 <Menu className="h-5 w-5" />
               </Button>
             </div>
@@ -164,6 +173,10 @@ const Header = () => {
           setIsServicesMenuOpen(false);
           setIsCurrencyConverterOpen(true);
         }}
+        onOpenGuide={() => {
+          setIsServicesMenuOpen(false);
+          setIsGuideOpen(true);
+        }}
       />
       
       <TranslatorModal 
@@ -174,6 +187,24 @@ const Header = () => {
       <CurrencyConverter 
         isOpen={isCurrencyConverterOpen}
         onClose={() => setIsCurrencyConverterOpen(false)}
+      />
+
+      <InteractiveGuide 
+        isOpen={isGuideOpen}
+        onClose={() => setIsGuideOpen(false)}
+      />
+
+      <MobileMenu 
+        isOpen={isMobileMenuOpen}
+        onClose={() => setIsMobileMenuOpen(false)}
+        onOpenTranslator={() => {
+          setIsMobileMenuOpen(false);
+          setIsTranslatorOpen(true);
+        }}
+        onOpenCurrencyConverter={() => {
+          setIsMobileMenuOpen(false);
+          setIsCurrencyConverterOpen(true);
+        }}
       />
     </>
   );
