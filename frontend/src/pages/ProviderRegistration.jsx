@@ -149,11 +149,39 @@ const ProviderRegistration = () => {
     }
   };
 
-  const handleProviderTypeSelect = (type) => {
+  const handleSpecialtyToggle = (specialty) => {
     setFormData(prev => ({
       ...prev,
-      providerType: type.id,
-      commission: type.commission
+      specialties: prev.specialties.includes(specialty)
+        ? prev.specialties.filter(s => s !== specialty)
+        : [...prev.specialties, specialty]
+    }));
+  };
+
+  const handleLanguageToggle = (language) => {
+    setFormData(prev => ({
+      ...prev,
+      languages: prev.languages.includes(language)
+        ? prev.languages.filter(l => l !== language)
+        : [...prev.languages, language]
+    }));
+  };
+
+  const handleSpecialtyToggle = (specialty) => {
+    setFormData(prev => ({
+      ...prev,
+      specialties: prev.specialties.includes(specialty)
+        ? prev.specialties.filter(s => s !== specialty)
+        : [...prev.specialties, specialty]
+    }));
+  };
+
+  const handleLanguageToggle = (language) => {
+    setFormData(prev => ({
+      ...prev,
+      languages: prev.languages.includes(language)
+        ? prev.languages.filter(l => l !== language)
+        : [...prev.languages, language]
     }));
   };
 
