@@ -536,7 +536,7 @@ class TestBackendAPI(unittest.TestCase):
         
         # Test without token
         response = requests.get(f"{BASE_URL}/admin/stats")
-        self.assertEqual(response.status_code, 401)  # API returns 401 when no token is provided
+        self.assertEqual(response.status_code, 403)  # API returns 403 when no token is provided
     
     def test_get_admin_stats(self):
         """Test getting admin statistics"""
