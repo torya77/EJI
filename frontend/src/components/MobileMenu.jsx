@@ -15,7 +15,8 @@ import {
   Settings,
   LogOut,
   Globe,
-  Heart
+  Heart,
+  Car
 } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
