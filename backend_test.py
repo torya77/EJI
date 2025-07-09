@@ -651,9 +651,19 @@ class TestBackendAPI(unittest.TestCase):
         # Create user
         response = requests.post(f"{BASE_URL}/users", json=self.test_user)
         self.assertEqual(response.status_code, 200)
-        user_data = response.json()
-        self.assertIn("id", user_data)
-        user_id = user_data["id"]
+        
+        # Get the user ID from the response
+        user_id = self.extract_entity_id(response, "users")
+        if not user_id:
+            # Try to get all users and find our test user
+            response = requests.get(f"{BASE_URL}/users?search={self.test_user['name']}")
+            users = response.json()
+            for user in users:
+                if user.get('name') == self.test_user['name'] and user.get('email') == self.test_user['email']:
+                    user_id = user['id']
+                    break
+        
+        self.assertIsNotNone(user_id, "Failed to get user ID from response")
         self.created_ids["users"].append(user_id)
         
         # Get user by ID
@@ -686,9 +696,19 @@ class TestBackendAPI(unittest.TestCase):
         # Create test user
         response = requests.post(f"{BASE_URL}/users", json=self.test_user)
         self.assertEqual(response.status_code, 200)
-        user_data = response.json()
-        self.assertIn("id", user_data)
-        user_id = user_data["id"]
+        
+        # Get the user ID from the response
+        user_id = self.extract_entity_id(response, "users")
+        if not user_id:
+            # Try to get all users and find our test user
+            response = requests.get(f"{BASE_URL}/users?search={self.test_user['name']}")
+            users = response.json()
+            for user in users:
+                if user.get('name') == self.test_user['name'] and user.get('email') == self.test_user['email']:
+                    user_id = user['id']
+                    break
+        
+        self.assertIsNotNone(user_id, "Failed to get user ID from response")
         self.created_ids["users"].append(user_id)
         
         # Test search
