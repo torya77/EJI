@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { 
@@ -26,9 +26,21 @@ const LanguageSelector = () => {
     changeLanguage(lang);
     setIsOpen(false);
   };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isOpen && !event.target.closest('[data-language-selector]')) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [isOpen]);
   
   return (
-    <div className="relative">
+    <div className="relative" data-language-selector>
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="sm" className="flex items-center space-x-1 px-2 min-w-[60px]">
@@ -36,7 +48,7 @@ const LanguageSelector = () => {
             <span className="font-medium text-xs">{languageLabels[currentLanguage]?.label}</span>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-48">
+        <DropdownMenuContent align="end" className="w-48 z-50">
           {availableLanguages.map((lang) => (
             <DropdownMenuItem
               key={lang}
@@ -61,5 +73,7 @@ const LanguageSelector = () => {
     </div>
   );
 };
+
+export default LanguageSelector;
 
 export default LanguageSelector;
