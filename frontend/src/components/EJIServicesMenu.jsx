@@ -66,13 +66,13 @@ const EJIServicesMenu = ({ isOpen, onClose, onOpenTranslator, onOpenCurrencyConv
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-        <CardHeader className="text-center relative">
+      <Card className="w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white shadow-2xl">
+        <CardHeader className="text-center relative bg-white">
           <Button 
             variant="ghost" 
             size="sm" 
             onClick={onClose}
-            className="absolute top-4 right-4"
+            className="absolute top-4 right-4 hover:bg-gray-100"
           >
             <X className="w-4 h-4" />
           </Button>
@@ -85,26 +85,26 @@ const EJIServicesMenu = ({ isOpen, onClose, onOpenTranslator, onOpenCurrencyConv
               <CardTitle className="text-3xl font-bold bg-gradient-to-r from-green-600 to-red-600 bg-clip-text text-transparent">
                 EJI Services
               </CardTitle>
-              <CardDescription className="text-lg">
+              <CardDescription className="text-lg text-gray-600">
                 Vos outils essentiels pour voyager en Algérie
               </CardDescription>
             </div>
           </div>
         </CardHeader>
         
-        <CardContent>
+        <CardContent className="bg-white">
           <div className="grid md:grid-cols-2 gap-6">
             {services.map((service) => {
               const Icon = service.icon;
               return (
                 <Card 
                   key={service.id} 
-                  className="group hover:shadow-xl transition-all duration-300 cursor-pointer border-2 hover:border-gray-300 overflow-hidden"
+                  className="group hover:shadow-xl transition-all duration-300 cursor-pointer border-2 hover:border-gray-300 overflow-hidden bg-white"
                   onClick={service.action}
                 >
                   <div className={`h-2 bg-gradient-to-r ${service.gradient}`}></div>
                   
-                  <CardContent className="p-6">
+                  <CardContent className="p-6 bg-white">
                     <div className="flex items-start space-x-4">
                       <div className={`w-14 h-14 rounded-xl bg-gradient-to-r ${service.gradient} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
                         <Icon className="w-7 h-7 text-white" />
@@ -148,7 +148,7 @@ const EJIServicesMenu = ({ isOpen, onClose, onOpenTranslator, onOpenCurrencyConv
           </div>
           
           {/* Quick Actions */}
-          <div className="mt-8 pt-6 border-t border-gray-200">
+          <div className="mt-8 pt-6 border-t border-gray-200 bg-white">
             <h4 className="text-lg font-semibold text-gray-900 mb-4 text-center">
               Actions Rapides
             </h4>
@@ -164,7 +164,7 @@ const EJIServicesMenu = ({ isOpen, onClose, onOpenTranslator, onOpenCurrencyConv
                   <Button
                     key={index}
                     variant="outline"
-                    className="h-20 flex flex-col items-center justify-center space-y-2 hover:bg-gray-50 border-2 hover:border-green-300"
+                    className="h-20 flex flex-col items-center justify-center space-y-2 hover:bg-gray-50 border-2 hover:border-green-300 bg-white"
                     onClick={action.action}
                   >
                     <ActionIcon className="w-6 h-6 text-gray-600" />
@@ -176,7 +176,7 @@ const EJIServicesMenu = ({ isOpen, onClose, onOpenTranslator, onOpenCurrencyConv
           </div>
           
           {/* Footer */}
-          <div className="mt-6 pt-4 border-t border-gray-200 text-center">
+          <div className="mt-6 pt-4 border-t border-gray-200 text-center bg-white">
             <p className="text-sm text-gray-500 flex items-center justify-center space-x-1">
               <Heart className="w-4 h-4 text-red-500" />
               <span>Créé avec passion pour l'Algérie</span>
