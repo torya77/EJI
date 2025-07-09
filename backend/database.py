@@ -1,5 +1,11 @@
 from motor.motor_asyncio import AsyncIOMotorClient
+from dotenv import load_dotenv
 import os
+from pathlib import Path
+
+# Load environment variables
+ROOT_DIR = Path(__file__).parent
+load_dotenv(ROOT_DIR / '.env')
 
 # MongoDB connection
 client = AsyncIOMotorClient(os.environ['MONGO_URL'])
