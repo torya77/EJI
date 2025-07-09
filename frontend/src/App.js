@@ -8,6 +8,8 @@ import Restaurants from "./pages/Restaurants";
 import Marketplace from "./pages/Marketplace";
 import Social from "./pages/Social";
 import ProviderDashboard from "./pages/ProviderDashboard";
+import CarRental from "./pages/CarRental";
+import LocalGuides from "./pages/LocalGuides";
 import { Toaster } from "./components/ui/toaster";
 import { LanguageProvider } from "./contexts/LanguageContext";
 
@@ -23,6 +25,8 @@ function App() {
             <Route path="/restaurants" element={<Restaurants />} />
             <Route path="/marketplace" element={<Marketplace />} />
             <Route path="/social" element={<Social />} />
+            <Route path="/car-rental" element={<CarRental />} />
+            <Route path="/local-guides" element={<LocalGuides />} />
             <Route path="/provider-dashboard" element={<ProviderDashboard />} />
           </Routes>
           <Toaster />
