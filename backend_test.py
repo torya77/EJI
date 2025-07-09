@@ -101,6 +101,27 @@ class TestBackendAPI(unittest.TestCase):
             print(f"Response: {response.json()}")
         except:
             print(f"Response: {response.text}")
+            
+    # Helper method to extract entity ID from response
+    def extract_entity_id(self, response, entity_type):
+        """Extract entity ID from response, handling both single object and list responses"""
+        data = response.json()
+        
+        # If response is a list, find the entity that matches our test data
+        if isinstance(data, list):
+            # For debugging
+            print(f"Response is a list with {len(data)} items")
+            
+            # Return the first item's ID as a fallback
+            if data and 'id' in data[0]:
+                return data[0]['id']
+            return None
+        
+        # If response is a single object
+        elif isinstance(data, dict) and 'id' in data:
+            return data['id']
+            
+        return None
 
     # ===== Events API Tests =====
     
