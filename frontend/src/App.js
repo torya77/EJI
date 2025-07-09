@@ -10,6 +10,8 @@ import Social from "./pages/Social";
 import ProviderDashboard from "./pages/ProviderDashboard";
 import CarRental from "./pages/CarRental";
 import LocalGuides from "./pages/LocalGuides";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminProviders from "./pages/AdminProviders";
 import { Toaster } from "./components/ui/toaster";
 import { LanguageProvider } from "./contexts/LanguageContext";
 
@@ -28,6 +30,8 @@ function App() {
             <Route path="/car-rental" element={<CarRental />} />
             <Route path="/local-guides" element={<LocalGuides />} />
             <Route path="/provider-dashboard" element={<ProviderDashboard />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/providers" element={<AdminProviders />} />
           </Routes>
           <Toaster />
         </BrowserRouter>
