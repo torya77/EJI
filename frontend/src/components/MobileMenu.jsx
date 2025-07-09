@@ -29,7 +29,9 @@ const MobileMenu = ({ isOpen, onClose, onOpenTranslator, onOpenCurrencyConverter
     { path: '/events', label: t('events'), icon: Calendar },
     { path: '/restaurants', label: t('restaurants'), icon: Store },
     { path: '/marketplace', label: t('marketplace'), icon: Store },
-    { path: '/social', label: t('social'), icon: Users }
+    { path: '/social', label: t('social'), icon: Users },
+    { path: '/car-rental', label: 'Location Voitures', icon: Car },
+    { path: '/local-guides', label: 'Guides Locaux', icon: Users }
   ];
 
   const languageLabels = {
