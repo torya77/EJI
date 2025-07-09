@@ -32,7 +32,9 @@ const Header = () => {
   const navItems = [
     { path: '/events', label: t('events'), icon: Calendar },
     { path: '/restaurants', label: t('restaurants'), icon: Store },
-    { path: '/marketplace', label: t('marketplace'), icon: Store }
+    { path: '/marketplace', label: t('marketplace'), icon: Store },
+    { path: '/car-rental', label: 'Location Voitures', icon: Car },
+    { path: '/local-guides', label: 'Guides Locaux', icon: Users }
   ];
 
   const isActive = (path) => location.pathname === path;
