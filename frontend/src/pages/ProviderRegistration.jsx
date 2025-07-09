@@ -222,11 +222,43 @@ const ProviderRegistration = () => {
     setStep(step - 1);
   };
 
-  const submitRegistration = () => {
-    if (validateStep(4)) {
-      // Soumettre l'inscription
-      alert('Inscription soumise avec succès ! Vous recevrez une réponse sous 48h.');
-      console.log('Données d\'inscription:', formData);
+  const submitRegistration = async () => {
+    if (!validateStep(4)) return;
+    
+    setIsSubmitting(true);
+    setSubmitError(null);
+    
+    try {
+      // Préparer les données pour l'API
+      const registrationData = {
+        provider_type: formData.providerType,
+        business_name: formData.businessName,
+        owner_name: formData.ownerName,
+        email: formData.email,
+        phone: formData.phone,
+        city: formData.city,
+        address: formData.address,
+        business_description: formData.businessDescription,
+        specialties: formData.specialties,
+        languages: formData.languages,
+        experience: formData.experience,
+        capacity: formData.capacity,
+        quality_commitments: formData.qualityCommitments,
+        charte_accepted: formData.charteAccepted,
+        commission_accepted: formData.commissionAccepted,
+        understands_commission: formData.understandsCommission
+      };
+      
+      const response = await providerApi.register(registrationData);
+      
+      setSubmitSuccess(true);
+      console.log('Inscription réussie:', response);
+      
+    } catch (error) {
+      setSubmitError(error.message);
+      console.error('Erreur lors de l\'inscription:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
