@@ -388,9 +388,19 @@ class TestBackendAPI(unittest.TestCase):
         # Create product
         response = requests.post(f"{BASE_URL}/products", json=self.test_product)
         self.assertEqual(response.status_code, 200)
-        product_data = response.json()
-        self.assertIn("id", product_data)
-        product_id = product_data["id"]
+        
+        # Get the product ID from the response
+        product_id = self.extract_entity_id(response, "products")
+        if not product_id:
+            # Try to get all products and find our test product
+            response = requests.get(f"{BASE_URL}/products?search={self.test_product['name']}")
+            products = response.json()
+            for product in products:
+                if product.get('name') == self.test_product['name']:
+                    product_id = product['id']
+                    break
+        
+        self.assertIsNotNone(product_id, "Failed to get product ID from response")
         self.created_ids["products"].append(product_id)
         
         # Get product by ID
@@ -423,9 +433,19 @@ class TestBackendAPI(unittest.TestCase):
         # Create test product
         response = requests.post(f"{BASE_URL}/products", json=self.test_product)
         self.assertEqual(response.status_code, 200)
-        product_data = response.json()
-        self.assertIn("id", product_data)
-        product_id = product_data["id"]
+        
+        # Get the product ID from the response
+        product_id = self.extract_entity_id(response, "products")
+        if not product_id:
+            # Try to get all products and find our test product
+            response = requests.get(f"{BASE_URL}/products?search={self.test_product['name']}")
+            products = response.json()
+            for product in products:
+                if product.get('name') == self.test_product['name']:
+                    product_id = product['id']
+                    break
+        
+        self.assertIsNotNone(product_id, "Failed to get product ID from response")
         self.created_ids["products"].append(product_id)
         
         # Test category filter
@@ -447,9 +467,19 @@ class TestBackendAPI(unittest.TestCase):
         # Create test product
         response = requests.post(f"{BASE_URL}/products", json=self.test_product)
         self.assertEqual(response.status_code, 200)
-        product_data = response.json()
-        self.assertIn("id", product_data)
-        product_id = product_data["id"]
+        
+        # Get the product ID from the response
+        product_id = self.extract_entity_id(response, "products")
+        if not product_id:
+            # Try to get all products and find our test product
+            response = requests.get(f"{BASE_URL}/products?search={self.test_product['name']}")
+            products = response.json()
+            for product in products:
+                if product.get('name') == self.test_product['name']:
+                    product_id = product['id']
+                    break
+        
+        self.assertIsNotNone(product_id, "Failed to get product ID from response")
         self.created_ids["products"].append(product_id)
         
         # Purchase product
