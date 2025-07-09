@@ -208,17 +208,19 @@ class TestBackendAPI(unittest.TestCase):
         # Create restaurant
         response = requests.post(f"{BASE_URL}/restaurants", json=self.test_restaurant)
         self.assertEqual(response.status_code, 200)
-        restaurant = response.json()
-        self.created_ids["restaurants"].append(restaurant["id"])
+        restaurant_data = response.json()
+        self.assertIn("id", restaurant_data)
+        restaurant_id = restaurant_data["id"]
+        self.created_ids["restaurants"].append(restaurant_id)
         
         # Get restaurant by ID
-        response = requests.get(f"{BASE_URL}/restaurants/{restaurant['id']}")
+        response = requests.get(f"{BASE_URL}/restaurants/{restaurant_id}")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["name"], self.test_restaurant["name"])
         
         # Update restaurant
         update_data = {"name": "Updated Test Restaurant"}
-        response = requests.put(f"{BASE_URL}/restaurants/{restaurant['id']}", json=update_data)
+        response = requests.put(f"{BASE_URL}/restaurants/{restaurant_id}", json=update_data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["name"], "Updated Test Restaurant")
         
@@ -228,20 +230,23 @@ class TestBackendAPI(unittest.TestCase):
         self.assertIsInstance(response.json(), list)
         
         # Delete restaurant
-        response = requests.delete(f"{BASE_URL}/restaurants/{restaurant['id']}")
+        response = requests.delete(f"{BASE_URL}/restaurants/{restaurant_id}")
         self.assertEqual(response.status_code, 200)
-        self.created_ids["restaurants"].remove(restaurant["id"])
+        self.created_ids["restaurants"].remove(restaurant_id)
         
         # Verify deletion
-        response = requests.get(f"{BASE_URL}/restaurants/{restaurant['id']}")
+        response = requests.get(f"{BASE_URL}/restaurants/{restaurant_id}")
         self.assertEqual(response.status_code, 404)
     
     def test_restaurants_filters(self):
         """Test filtering and searching for Restaurants API"""
         # Create test restaurant
         response = requests.post(f"{BASE_URL}/restaurants", json=self.test_restaurant)
-        restaurant = response.json()
-        self.created_ids["restaurants"].append(restaurant["id"])
+        self.assertEqual(response.status_code, 200)
+        restaurant_data = response.json()
+        self.assertIn("id", restaurant_data)
+        restaurant_id = restaurant_data["id"]
+        self.created_ids["restaurants"].append(restaurant_id)
         
         # Test cuisine filter
         response = requests.get(f"{BASE_URL}/restaurants?cuisine={self.test_restaurant['cuisine']}")
@@ -266,11 +271,14 @@ class TestBackendAPI(unittest.TestCase):
         """Test reserving a table at a restaurant"""
         # Create test restaurant
         response = requests.post(f"{BASE_URL}/restaurants", json=self.test_restaurant)
-        restaurant = response.json()
-        self.created_ids["restaurants"].append(restaurant["id"])
+        self.assertEqual(response.status_code, 200)
+        restaurant_data = response.json()
+        self.assertIn("id", restaurant_data)
+        restaurant_id = restaurant_data["id"]
+        self.created_ids["restaurants"].append(restaurant_id)
         
         # Reserve table
-        response = requests.post(f"{BASE_URL}/restaurants/{restaurant['id']}/reserve")
+        response = requests.post(f"{BASE_URL}/restaurants/{restaurant_id}/reserve")
         self.assertEqual(response.status_code, 200)
         self.assertIn("message", response.json())
     
@@ -299,17 +307,19 @@ class TestBackendAPI(unittest.TestCase):
         # Create product
         response = requests.post(f"{BASE_URL}/products", json=self.test_product)
         self.assertEqual(response.status_code, 200)
-        product = response.json()
-        self.created_ids["products"].append(product["id"])
+        product_data = response.json()
+        self.assertIn("id", product_data)
+        product_id = product_data["id"]
+        self.created_ids["products"].append(product_id)
         
         # Get product by ID
-        response = requests.get(f"{BASE_URL}/products/{product['id']}")
+        response = requests.get(f"{BASE_URL}/products/{product_id}")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["name"], self.test_product["name"])
         
         # Update product
         update_data = {"name": "Updated Test Product"}
-        response = requests.put(f"{BASE_URL}/products/{product['id']}", json=update_data)
+        response = requests.put(f"{BASE_URL}/products/{product_id}", json=update_data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["name"], "Updated Test Product")
         
@@ -319,20 +329,23 @@ class TestBackendAPI(unittest.TestCase):
         self.assertIsInstance(response.json(), list)
         
         # Delete product
-        response = requests.delete(f"{BASE_URL}/products/{product['id']}")
+        response = requests.delete(f"{BASE_URL}/products/{product_id}")
         self.assertEqual(response.status_code, 200)
-        self.created_ids["products"].remove(product["id"])
+        self.created_ids["products"].remove(product_id)
         
         # Verify deletion
-        response = requests.get(f"{BASE_URL}/products/{product['id']}")
+        response = requests.get(f"{BASE_URL}/products/{product_id}")
         self.assertEqual(response.status_code, 404)
     
     def test_products_filters(self):
         """Test filtering and searching for Products API"""
         # Create test product
         response = requests.post(f"{BASE_URL}/products", json=self.test_product)
-        product = response.json()
-        self.created_ids["products"].append(product["id"])
+        self.assertEqual(response.status_code, 200)
+        product_data = response.json()
+        self.assertIn("id", product_data)
+        product_id = product_data["id"]
+        self.created_ids["products"].append(product_id)
         
         # Test category filter
         response = requests.get(f"{BASE_URL}/products?category={self.test_product['category']}")
@@ -352,11 +365,14 @@ class TestBackendAPI(unittest.TestCase):
         """Test purchasing a product"""
         # Create test product
         response = requests.post(f"{BASE_URL}/products", json=self.test_product)
-        product = response.json()
-        self.created_ids["products"].append(product["id"])
+        self.assertEqual(response.status_code, 200)
+        product_data = response.json()
+        self.assertIn("id", product_data)
+        product_id = product_data["id"]
+        self.created_ids["products"].append(product_id)
         
         # Purchase product
-        response = requests.post(f"{BASE_URL}/products/{product['id']}/purchase")
+        response = requests.post(f"{BASE_URL}/products/{product_id}/purchase")
         self.assertEqual(response.status_code, 200)
         self.assertIn("message", response.json())
     
