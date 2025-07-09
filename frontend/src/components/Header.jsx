@@ -68,10 +68,10 @@ const Header = () => {
             </div>
 
             {/* Navigation */}
-            <nav className="hidden md:flex items-center space-x-1">
+            <nav className="hidden sm:flex items-center space-x-1 overflow-x-auto">
               <Link
                 to="/"
-                className={`flex items-center space-x-1 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                className={`flex items-center space-x-1 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${
                   location.pathname === '/'
                     ? 'bg-green-50 text-green-700 border border-green-200'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
@@ -87,7 +87,7 @@ const Header = () => {
                   <Link
                     key={item.path}
                     to={item.path}
-                    className={`flex items-center space-x-1 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    className={`flex items-center space-x-1 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${
                       isActive(item.path)
                         ? 'bg-green-50 text-green-700 border border-green-200'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
