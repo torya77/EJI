@@ -7,12 +7,12 @@ import logging
 from pathlib import Path
 
 # Import routes
-from routes.events import router as events_router
-from routes.restaurants import router as restaurants_router
-from routes.products import router as products_router
-from routes.posts import router as posts_router
-from routes.users import router as users_router
-from routes.translation import router as translation_router
+from .routes.events import router as events_router
+from .routes.restaurants import router as restaurants_router
+from .routes.products import router as products_router
+from .routes.posts import router as posts_router
+from .routes.users import router as users_router
+from .routes.translation import router as translation_router
 
 # Import database functions
 from database import init_database
