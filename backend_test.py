@@ -259,9 +259,19 @@ class TestBackendAPI(unittest.TestCase):
         # Create restaurant
         response = requests.post(f"{BASE_URL}/restaurants", json=self.test_restaurant)
         self.assertEqual(response.status_code, 200)
-        restaurant_data = response.json()
-        self.assertIn("id", restaurant_data)
-        restaurant_id = restaurant_data["id"]
+        
+        # Get the restaurant ID from the response
+        restaurant_id = self.extract_entity_id(response, "restaurants")
+        if not restaurant_id:
+            # Try to get all restaurants and find our test restaurant
+            response = requests.get(f"{BASE_URL}/restaurants?search={self.test_restaurant['name']}")
+            restaurants = response.json()
+            for restaurant in restaurants:
+                if restaurant.get('name') == self.test_restaurant['name']:
+                    restaurant_id = restaurant['id']
+                    break
+        
+        self.assertIsNotNone(restaurant_id, "Failed to get restaurant ID from response")
         self.created_ids["restaurants"].append(restaurant_id)
         
         # Get restaurant by ID
@@ -294,9 +304,19 @@ class TestBackendAPI(unittest.TestCase):
         # Create test restaurant
         response = requests.post(f"{BASE_URL}/restaurants", json=self.test_restaurant)
         self.assertEqual(response.status_code, 200)
-        restaurant_data = response.json()
-        self.assertIn("id", restaurant_data)
-        restaurant_id = restaurant_data["id"]
+        
+        # Get the restaurant ID from the response
+        restaurant_id = self.extract_entity_id(response, "restaurants")
+        if not restaurant_id:
+            # Try to get all restaurants and find our test restaurant
+            response = requests.get(f"{BASE_URL}/restaurants?search={self.test_restaurant['name']}")
+            restaurants = response.json()
+            for restaurant in restaurants:
+                if restaurant.get('name') == self.test_restaurant['name']:
+                    restaurant_id = restaurant['id']
+                    break
+        
+        self.assertIsNotNone(restaurant_id, "Failed to get restaurant ID from response")
         self.created_ids["restaurants"].append(restaurant_id)
         
         # Test cuisine filter
@@ -323,9 +343,19 @@ class TestBackendAPI(unittest.TestCase):
         # Create test restaurant
         response = requests.post(f"{BASE_URL}/restaurants", json=self.test_restaurant)
         self.assertEqual(response.status_code, 200)
-        restaurant_data = response.json()
-        self.assertIn("id", restaurant_data)
-        restaurant_id = restaurant_data["id"]
+        
+        # Get the restaurant ID from the response
+        restaurant_id = self.extract_entity_id(response, "restaurants")
+        if not restaurant_id:
+            # Try to get all restaurants and find our test restaurant
+            response = requests.get(f"{BASE_URL}/restaurants?search={self.test_restaurant['name']}")
+            restaurants = response.json()
+            for restaurant in restaurants:
+                if restaurant.get('name') == self.test_restaurant['name']:
+                    restaurant_id = restaurant['id']
+                    break
+        
+        self.assertIsNotNone(restaurant_id, "Failed to get restaurant ID from response")
         self.created_ids["restaurants"].append(restaurant_id)
         
         # Reserve table
