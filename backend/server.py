@@ -15,8 +15,8 @@ from .routes.users import router as users_router
 from .routes.translation import router as translation_router
 
 # Import database functions
-from database import init_database
-from seed_data import seed_database
+from .database import init_database
+from .seed_data import seed_database
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
