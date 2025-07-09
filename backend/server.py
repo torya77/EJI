@@ -60,6 +60,8 @@ api_router.include_router(products_router)
 api_router.include_router(posts_router)
 api_router.include_router(users_router)
 api_router.include_router(translation_router)
+api_router.include_router(admin_router)
+api_router.include_router(providers_router)
 
 # Include the router in the main app
 app.include_router(api_router)
