@@ -176,6 +176,30 @@ backend:
       - working: true
         agent: "testing"
         comment: "GET /api/users returns a list of users. GET /api/users/{id} returns a single user. Error handling for non-existent users works correctly."
+        
+  - task: "Admin API"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/admin.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "GET /api/admin/stats returns admin statistics. GET /api/admin/providers returns a list of providers with optional filters. GET /api/admin/providers/{provider_id} returns a specific provider. PUT /api/admin/providers/{provider_id}/status updates provider status. GET /api/admin/activities returns a list of activities with optional filters. PUT /api/admin/activities/{activity_id}/status updates activity status. POST /api/admin/activities creates a new activity. Authentication with Bearer admin_token_123 works correctly. DELETE /api/admin/providers/{provider_id} endpoint returns 400 instead of 200."
+
+  - task: "Providers API"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/providers.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "GET /api/providers/me returns provider profile. PUT /api/providers/me updates provider profile. GET /api/providers/dashboard/stats returns dashboard statistics. GET /api/providers/activities returns provider activities. POST /api/providers/activities creates a new activity. GET /api/providers/bookings returns provider bookings. PUT /api/providers/bookings/{booking_id}/status updates booking status. Authentication with Bearer provider_1_token works correctly. POST /api/providers/register endpoint is not available (returns 404)."
 
 frontend:
   - task: "Frontend UI"
@@ -204,6 +228,8 @@ test_plan:
     - "Posts API"
     - "Translation API"
     - "Users API"
+    - "Admin API"
+    - "Providers API"
   stuck_tasks: []
   test_all: true
   test_priority: "high_first"
@@ -215,3 +241,5 @@ agent_communication:
     message: "Fixed critical syntax error in EJIServicesMenu.jsx. All reported issues have been resolved: (1) Syntax error fixed (2) EJI Services menu now functional (3) Opaque white background implemented (4) Interactive Guide working (5) Casbah photo visible (6) Map with events visible on homepage. All frontend functionality is working correctly."
   - agent: "testing"
     message: "Performed a comprehensive retest of all backend API endpoints after frontend fixes. All endpoints are functioning correctly. The Events API, Restaurants API, Products API, Posts API, Translation API, and Users API all return proper responses and handle errors appropriately. Special operations like booking events, reserving tables, purchasing products, and liking/unliking posts work as expected. The backend is stable and ready for production use."
+  - agent: "testing"
+    message: "Tested the new Admin API and Providers API endpoints. Most endpoints are working correctly with proper authentication. The Admin API provides endpoints for managing providers and activities, including viewing statistics, listing providers/activities, and updating statuses. The Providers API allows providers to manage their profile, activities, and bookings. Two endpoints are not working as expected: DELETE /api/admin/providers/{provider_id} returns 400 instead of 200, and POST /api/providers/register is not available (returns 404). Authentication is properly implemented with Bearer tokens (admin_token_123 for admin endpoints and provider_1_token for provider endpoints)."
