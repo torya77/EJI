@@ -86,8 +86,8 @@ const Hero = () => {
           <div className="relative">
             <div className="relative rounded-3xl overflow-hidden shadow-2xl transform hover:scale-105 transition-transform duration-700">
               <img 
-                src="https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?w=600&h=700&fit=crop" 
-                alt="Paysage algérien" 
+                src="https://images.unsplash.com/photo-1610133290889-0ed892ce5157" 
+                alt="Casbah d'Alger" 
                 className="w-full h-[600px] object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
