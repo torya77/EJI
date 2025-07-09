@@ -13,6 +13,8 @@ from .routes.products import router as products_router
 from .routes.posts import router as posts_router
 from .routes.users import router as users_router
 from .routes.translation import router as translation_router
+from .routes.admin import router as admin_router
+from .routes.providers import router as providers_router
 
 # Import database functions
 from .database import init_database
