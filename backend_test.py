@@ -401,17 +401,19 @@ class TestBackendAPI(unittest.TestCase):
         # Create post
         response = requests.post(f"{BASE_URL}/posts", json=self.test_post)
         self.assertEqual(response.status_code, 200)
-        post = response.json()
-        self.created_ids["posts"].append(post["id"])
+        post_data = response.json()
+        self.assertIn("id", post_data)
+        post_id = post_data["id"]
+        self.created_ids["posts"].append(post_id)
         
         # Get post by ID
-        response = requests.get(f"{BASE_URL}/posts/{post['id']}")
+        response = requests.get(f"{BASE_URL}/posts/{post_id}")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["content"], self.test_post["content"])
         
         # Update post
         update_data = {"content": "Updated test post content"}
-        response = requests.put(f"{BASE_URL}/posts/{post['id']}", json=update_data)
+        response = requests.put(f"{BASE_URL}/posts/{post_id}", json=update_data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["content"], "Updated test post content")
         
@@ -421,20 +423,23 @@ class TestBackendAPI(unittest.TestCase):
         self.assertIsInstance(response.json(), list)
         
         # Delete post
-        response = requests.delete(f"{BASE_URL}/posts/{post['id']}")
+        response = requests.delete(f"{BASE_URL}/posts/{post_id}")
         self.assertEqual(response.status_code, 200)
-        self.created_ids["posts"].remove(post["id"])
+        self.created_ids["posts"].remove(post_id)
         
         # Verify deletion
-        response = requests.get(f"{BASE_URL}/posts/{post['id']}")
+        response = requests.get(f"{BASE_URL}/posts/{post_id}")
         self.assertEqual(response.status_code, 404)
     
     def test_posts_filters(self):
         """Test filtering for Posts API"""
         # Create test post
         response = requests.post(f"{BASE_URL}/posts", json=self.test_post)
-        post = response.json()
-        self.created_ids["posts"].append(post["id"])
+        self.assertEqual(response.status_code, 200)
+        post_data = response.json()
+        self.assertIn("id", post_data)
+        post_id = post_data["id"]
+        self.created_ids["posts"].append(post_id)
         
         # Test author filter
         response = requests.get(f"{BASE_URL}/posts?author={self.test_post['author']}")
@@ -445,26 +450,29 @@ class TestBackendAPI(unittest.TestCase):
         """Test liking and unliking a post"""
         # Create test post
         response = requests.post(f"{BASE_URL}/posts", json=self.test_post)
-        post = response.json()
-        self.created_ids["posts"].append(post["id"])
+        self.assertEqual(response.status_code, 200)
+        post_data = response.json()
+        self.assertIn("id", post_data)
+        post_id = post_data["id"]
+        self.created_ids["posts"].append(post_id)
         
         # Like post
-        response = requests.post(f"{BASE_URL}/posts/{post['id']}/like")
+        response = requests.post(f"{BASE_URL}/posts/{post_id}/like")
         self.assertEqual(response.status_code, 200)
         self.assertIn("message", response.json())
         
         # Verify likes count increased
-        response = requests.get(f"{BASE_URL}/posts/{post['id']}")
+        response = requests.get(f"{BASE_URL}/posts/{post_id}")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["likes"], 1)
         
         # Unlike post
-        response = requests.post(f"{BASE_URL}/posts/{post['id']}/unlike")
+        response = requests.post(f"{BASE_URL}/posts/{post_id}/unlike")
         self.assertEqual(response.status_code, 200)
         self.assertIn("message", response.json())
         
         # Verify likes count decreased
-        response = requests.get(f"{BASE_URL}/posts/{post['id']}")
+        response = requests.get(f"{BASE_URL}/posts/{post_id}")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["likes"], 0)
     
@@ -497,17 +505,19 @@ class TestBackendAPI(unittest.TestCase):
         # Create user
         response = requests.post(f"{BASE_URL}/users", json=self.test_user)
         self.assertEqual(response.status_code, 200)
-        user = response.json()
-        self.created_ids["users"].append(user["id"])
+        user_data = response.json()
+        self.assertIn("id", user_data)
+        user_id = user_data["id"]
+        self.created_ids["users"].append(user_id)
         
         # Get user by ID
-        response = requests.get(f"{BASE_URL}/users/{user['id']}")
+        response = requests.get(f"{BASE_URL}/users/{user_id}")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["name"], self.test_user["name"])
         
         # Update user
         update_data = {"name": "Updated Test User"}
-        response = requests.put(f"{BASE_URL}/users/{user['id']}", json=update_data)
+        response = requests.put(f"{BASE_URL}/users/{user_id}", json=update_data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["name"], "Updated Test User")
         
@@ -517,20 +527,23 @@ class TestBackendAPI(unittest.TestCase):
         self.assertIsInstance(response.json(), list)
         
         # Delete user
-        response = requests.delete(f"{BASE_URL}/users/{user['id']}")
+        response = requests.delete(f"{BASE_URL}/users/{user_id}")
         self.assertEqual(response.status_code, 200)
-        self.created_ids["users"].remove(user["id"])
+        self.created_ids["users"].remove(user_id)
         
         # Verify deletion
-        response = requests.get(f"{BASE_URL}/users/{user['id']}")
+        response = requests.get(f"{BASE_URL}/users/{user_id}")
         self.assertEqual(response.status_code, 404)
     
     def test_users_search(self):
         """Test searching for Users API"""
         # Create test user
         response = requests.post(f"{BASE_URL}/users", json=self.test_user)
-        user = response.json()
-        self.created_ids["users"].append(user["id"])
+        self.assertEqual(response.status_code, 200)
+        user_data = response.json()
+        self.assertIn("id", user_data)
+        user_id = user_data["id"]
+        self.created_ids["users"].append(user_id)
         
         # Test search
         response = requests.get(f"{BASE_URL}/users?search={self.test_user['name']}")
