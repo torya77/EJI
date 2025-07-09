@@ -70,10 +70,14 @@ class TestBackendAPI(unittest.TestCase):
     
     def test_get_events(self):
         """Test getting all events"""
+        print("Running test_get_events")
         response = requests.get(f"{BASE_URL}/events")
+        print(f"Status code: {response.status_code}")
+        print(f"Response: {response.json()}")
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response.json(), list)
         self.assertGreater(len(response.json()), 0)
+        print("test_get_events passed")
     
     def test_get_event_by_id(self):
         """Test getting a single event by ID"""
