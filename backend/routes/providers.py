@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from datetime import datetime
 import uuid
 
-router = APIRouter(prefix="/api/providers", tags=["providers"])
+router = APIRouter(prefix="/providers", tags=["providers"])
 security = HTTPBearer()
 
 # Pydantic Models pour l'API Prestataires
