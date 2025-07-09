@@ -4,6 +4,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Badge } from '../components/ui/badge';
+import { providerApi } from '../services/adminApi';
 import { 
   CheckCircle,
   FileText,
@@ -18,7 +19,8 @@ import {
   Camera,
   Award,
   Clock,
-  Percent
+  Percent,
+  Loader2
 } from 'lucide-react';
 
 const ProviderRegistration = () => {
