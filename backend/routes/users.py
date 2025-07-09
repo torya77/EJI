@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, Query
 from typing import List, Optional
-from models.user import User, UserCreate, UserUpdate
+from ..models.user import User, UserCreate, UserUpdate
 from motor.motor_asyncio import AsyncIOMotorDatabase
-from database import get_database
+from ..database import get_database
 from datetime import datetime
 
 router = APIRouter(prefix="/users", tags=["users"])
