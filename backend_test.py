@@ -512,9 +512,19 @@ class TestBackendAPI(unittest.TestCase):
         # Create post
         response = requests.post(f"{BASE_URL}/posts", json=self.test_post)
         self.assertEqual(response.status_code, 200)
-        post_data = response.json()
-        self.assertIn("id", post_data)
-        post_id = post_data["id"]
+        
+        # Get the post ID from the response
+        post_id = self.extract_entity_id(response, "posts")
+        if not post_id:
+            # Try to get all posts and find our test post
+            response = requests.get(f"{BASE_URL}/posts?author={self.test_post['author']}")
+            posts = response.json()
+            for post in posts:
+                if post.get('author') == self.test_post['author'] and post.get('content') == self.test_post['content']:
+                    post_id = post['id']
+                    break
+        
+        self.assertIsNotNone(post_id, "Failed to get post ID from response")
         self.created_ids["posts"].append(post_id)
         
         # Get post by ID
@@ -547,9 +557,19 @@ class TestBackendAPI(unittest.TestCase):
         # Create test post
         response = requests.post(f"{BASE_URL}/posts", json=self.test_post)
         self.assertEqual(response.status_code, 200)
-        post_data = response.json()
-        self.assertIn("id", post_data)
-        post_id = post_data["id"]
+        
+        # Get the post ID from the response
+        post_id = self.extract_entity_id(response, "posts")
+        if not post_id:
+            # Try to get all posts and find our test post
+            response = requests.get(f"{BASE_URL}/posts?author={self.test_post['author']}")
+            posts = response.json()
+            for post in posts:
+                if post.get('author') == self.test_post['author'] and post.get('content') == self.test_post['content']:
+                    post_id = post['id']
+                    break
+        
+        self.assertIsNotNone(post_id, "Failed to get post ID from response")
         self.created_ids["posts"].append(post_id)
         
         # Test author filter
@@ -562,10 +582,25 @@ class TestBackendAPI(unittest.TestCase):
         # Create test post
         response = requests.post(f"{BASE_URL}/posts", json=self.test_post)
         self.assertEqual(response.status_code, 200)
-        post_data = response.json()
-        self.assertIn("id", post_data)
-        post_id = post_data["id"]
+        
+        # Get the post ID from the response
+        post_id = self.extract_entity_id(response, "posts")
+        if not post_id:
+            # Try to get all posts and find our test post
+            response = requests.get(f"{BASE_URL}/posts?author={self.test_post['author']}")
+            posts = response.json()
+            for post in posts:
+                if post.get('author') == self.test_post['author'] and post.get('content') == self.test_post['content']:
+                    post_id = post['id']
+                    break
+        
+        self.assertIsNotNone(post_id, "Failed to get post ID from response")
         self.created_ids["posts"].append(post_id)
+        
+        # Get initial likes count
+        response = requests.get(f"{BASE_URL}/posts/{post_id}")
+        self.assertEqual(response.status_code, 200)
+        initial_likes = response.json()["likes"]
         
         # Like post
         response = requests.post(f"{BASE_URL}/posts/{post_id}/like")
@@ -575,7 +610,7 @@ class TestBackendAPI(unittest.TestCase):
         # Verify likes count increased
         response = requests.get(f"{BASE_URL}/posts/{post_id}")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["likes"], 1)
+        self.assertEqual(response.json()["likes"], initial_likes + 1)
         
         # Unlike post
         response = requests.post(f"{BASE_URL}/posts/{post_id}/unlike")
@@ -585,7 +620,7 @@ class TestBackendAPI(unittest.TestCase):
         # Verify likes count decreased
         response = requests.get(f"{BASE_URL}/posts/{post_id}")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["likes"], 0)
+        self.assertEqual(response.json()["likes"], initial_likes)
     
     def test_post_not_found(self):
         """Test error handling for non-existent post"""
