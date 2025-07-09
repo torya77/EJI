@@ -12,6 +12,8 @@ import CarRental from "./pages/CarRental";
 import LocalGuides from "./pages/LocalGuides";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminProviders from "./pages/AdminProviders";
+import AdminActivities from "./pages/AdminActivities";
+import ProviderRegistration from "./pages/ProviderRegistration";
 import { Toaster } from "./components/ui/toaster";
 import { LanguageProvider } from "./contexts/LanguageContext";
 
@@ -30,8 +32,10 @@ function App() {
             <Route path="/car-rental" element={<CarRental />} />
             <Route path="/local-guides" element={<LocalGuides />} />
             <Route path="/provider-dashboard" element={<ProviderDashboard />} />
+            <Route path="/provider-registration" element={<ProviderRegistration />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/providers" element={<AdminProviders />} />
+            <Route path="/admin/activities" element={<AdminActivities />} />
           </Routes>
           <Toaster />
         </BrowserRouter>
