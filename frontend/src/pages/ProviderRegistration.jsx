@@ -499,6 +499,44 @@ const ProviderRegistration = () => {
                 </div>
               </div>
 
+              {/* Spécialités */}
+              <div>
+                <Label className="text-base font-semibold">Spécialités *</Label>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-3">
+                  {['Culture', 'Histoire', 'Aventure', 'Gastronomie', 'Photographie', 'Nature', 'Sport', 'Artisanat'].map((specialty) => (
+                    <label key={specialty} className="flex items-center space-x-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={formData.specialties.includes(specialty)}
+                        onChange={() => handleSpecialtyToggle(specialty)}
+                        className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                      />
+                      <span className="text-sm">{specialty}</span>
+                    </label>
+                  ))}
+                </div>
+                {errors.specialties && <p className="text-red-500 text-sm mt-1">{errors.specialties}</p>}
+              </div>
+
+              {/* Langues */}
+              <div>
+                <Label className="text-base font-semibold">Langues parlées *</Label>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-3">
+                  {['Français', 'Arabe', 'Anglais', 'Espagnol', 'Italien', 'Allemand', 'Chinois', 'Russe'].map((language) => (
+                    <label key={language} className="flex items-center space-x-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={formData.languages.includes(language)}
+                        onChange={() => handleLanguageToggle(language)}
+                        className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                      />
+                      <span className="text-sm">{language}</span>
+                    </label>
+                  ))}
+                </div>
+                {errors.languages && <p className="text-red-500 text-sm mt-1">{errors.languages}</p>}
+              </div>
+
               {/* Note sur transparence */}
               {selectedProviderType && (
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
