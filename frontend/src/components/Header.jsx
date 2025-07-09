@@ -9,7 +9,7 @@ import {
   DropdownMenuItem, 
   DropdownMenuTrigger 
 } from './ui/dropdown-menu';
-import { Search, Menu, MapPin, Calendar, Store, User, Settings, LogOut, BarChart3 } from 'lucide-react';
+import { Search, Menu, MapPin, Calendar, Store, User, Settings, LogOut, BarChart3, Car, Users } from 'lucide-react';
 import { mockUser } from '../data/mock';
 import LanguageSelector from './LanguageSelector';
 import TranslatorModal from './translator/TranslatorModal';
