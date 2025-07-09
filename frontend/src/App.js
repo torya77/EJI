@@ -8,22 +8,25 @@ import Restaurants from "./pages/Restaurants";
 import Marketplace from "./pages/Marketplace";
 import Social from "./pages/Social";
 import { Toaster } from "./components/ui/toaster";
+import { LanguageProvider } from "./contexts/LanguageContext";
 
 function App() {
   return (
-    <div className="App">
-      <BrowserRouter>
-        <Header />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/events" element={<Events />} />
-          <Route path="/restaurants" element={<Restaurants />} />
-          <Route path="/marketplace" element={<Marketplace />} />
-          <Route path="/social" element={<Social />} />
-        </Routes>
-        <Toaster />
-      </BrowserRouter>
-    </div>
+    <LanguageProvider>
+      <div className="App">
+        <BrowserRouter>
+          <Header />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/events" element={<Events />} />
+            <Route path="/restaurants" element={<Restaurants />} />
+            <Route path="/marketplace" element={<Marketplace />} />
+            <Route path="/social" element={<Social />} />
+          </Routes>
+          <Toaster />
+        </BrowserRouter>
+      </div>
+    </LanguageProvider>
   );
 }
 
