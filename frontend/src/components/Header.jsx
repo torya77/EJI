@@ -9,16 +9,18 @@ import {
   DropdownMenuItem, 
   DropdownMenuTrigger 
 } from './ui/dropdown-menu';
-import { Search, Menu, MapPin, Calendar, Store, Users, User, Settings, LogOut, Languages } from 'lucide-react';
+import { Search, Menu, MapPin, Calendar, Store, Users, User, Settings, LogOut, Languages, Calculator, BarChart3 } from 'lucide-react';
 import { mockUser } from '../data/mock';
 import LanguageSelector from './LanguageSelector';
 import TranslatorModal from './translator/TranslatorModal';
+import CurrencyConverter from './CurrencyConverter';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const Header = () => {
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
   const [isTranslatorOpen, setIsTranslatorOpen] = useState(false);
+  const [isCurrencyConverterOpen, setIsCurrencyConverterOpen] = useState(false);
   const { t } = useLanguage();
   
   const navItems = [
@@ -68,7 +70,7 @@ const Header = () => {
             </nav>
 
             {/* Search and Tools */}
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2">
               {/* Search Bar */}
               <div className="relative hidden lg:block">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -77,12 +79,23 @@ const Header = () => {
                   placeholder={t('search') || "Rechercher..."}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 pr-4 py-2 w-48 xl:w-64 border-gray-300 focus:border-green-500 focus:ring-green-500"
+                  className="pl-10 pr-4 py-2 w-48 xl:w-56 border-gray-300 focus:border-green-500 focus:ring-green-500"
                 />
               </div>
 
               {/* Tools Group */}
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-1">
+                {/* Currency Converter */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsCurrencyConverterOpen(true)}
+                  className="flex items-center space-x-1 border-green-200 text-green-700 hover:bg-green-50 px-2"
+                >
+                  <Calculator className="w-4 h-4" />
+                  <span className="hidden xl:inline text-xs">Devises</span>
+                </Button>
+
                 {/* Translator Button */}
                 <Button
                   variant="outline"
@@ -100,7 +113,7 @@ const Header = () => {
                 {/* User Menu */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-8 w-8 rounded-full p-0">
+                    <Button variant="ghost" className="relative h-8 w-8 rounded-full p-0 ml-1">
                       <Avatar className="h-8 w-8">
                         <AvatarImage src={mockUser.avatar} alt={mockUser.name} />
                         <AvatarFallback className="bg-green-100 text-green-700 text-xs">
@@ -112,7 +125,11 @@ const Header = () => {
                   <DropdownMenuContent className="w-56" align="end" forceMount>
                     <DropdownMenuItem>
                       <User className="mr-2 h-4 w-4" />
-                      <span>Mon Profil</span>
+                      <span>Profil Voyageur</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <BarChart3 className="mr-2 h-4 w-4" />
+                      <span>Tableau de Bord Prestataire</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem>
                       <Settings className="mr-2 h-4 w-4" />
@@ -126,7 +143,7 @@ const Header = () => {
                 </DropdownMenu>
 
                 {/* Mobile Menu */}
-                <Button variant="ghost" size="sm" className="lg:hidden p-1">
+                <Button variant="ghost" size="sm" className="lg:hidden p-1 ml-1">
                   <Menu className="h-5 w-5" />
                 </Button>
               </div>
@@ -135,10 +152,15 @@ const Header = () => {
         </div>
       </header>
 
-      {/* Translator Modal */}
+      {/* Modals */}
       <TranslatorModal 
         isOpen={isTranslatorOpen}
         onClose={() => setIsTranslatorOpen(false)}
+      />
+      
+      <CurrencyConverter 
+        isOpen={isCurrencyConverterOpen}
+        onClose={() => setIsCurrencyConverterOpen(false)}
       />
     </>
   );
