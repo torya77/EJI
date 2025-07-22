@@ -228,7 +228,7 @@ const LandingPage = () => {
       </section>
 
       {/* Statistics */}
-      <section className="py-20 bg-gradient-to-r from-green-600 to-green-700 text-white">
+      <section className="py-20 bg-gradient-to-r from-green-600 via-red-600 to-green-700 text-white">
         <div className="max-w-6xl mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {stats.map((stat, index) => (
