@@ -375,7 +375,7 @@ const LandingPage = () => {
             </Link>
             
             <Link to="/provider-registration">
-              <Button variant="outline" className="border-white text-white hover:bg-white hover:text-green-600 px-8 py-4 text-lg rounded-full">
+              <Button variant="outline" className="border-white text-white hover:bg-white hover:text-red-600 px-8 py-4 text-lg rounded-full transition-all">
                 Devenir Partenaire
                 <Heart className="w-5 h-5 ml-2" />
               </Button>
