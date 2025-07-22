@@ -297,15 +297,18 @@ metadata:
 
   - task: "Provider Dashboard Extension"
     implemented: true
-    working: false
+    working: true
     file: "/app/frontend/src/pages/ProviderDashboard.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: false
         agent: "main"
         comment: "Extended ProviderDashboard with full API integration, commission transparency calculations, activity creation, profile management, and booking management. Added real-time data loading from provider APIs, commission rates by provider type, and comprehensive UI for managing provider services. Requires backend testing to verify API integrations."
+      - working: true
+        agent: "testing"
+        comment: "Comprehensive testing of Provider Dashboard API endpoints completed successfully. All core functionality verified: (1) Dashboard Stats API returns correct data structure with revenue (157,500 DZD), bookings (45), ratings (4.9), and commission calculations (15% for guide provider). (2) Profile Management APIs work correctly - GET /api/providers/me returns complete profile data, PUT /api/providers/me successfully updates profile information. (3) Activity Management APIs fully functional - GET /api/providers/activities returns activity list with commission calculations, POST /api/providers/activities creates new activities with correct commission preview (15% commission rate, proper earnings calculation). (4) Booking Management APIs working - GET /api/providers/bookings returns booking list with customer info and payment details, PUT /api/providers/bookings/{id}/status successfully updates booking status (tested confirmed→cancelled→confirmed). (5) Authentication with Bearer provider_1_token works correctly for all protected endpoints. (6) Commission calculations are accurate across all endpoints - 15% commission rate properly applied with correct provider earnings and EJI commission amounts. All API integrations for the extended Provider Dashboard are working correctly."
 
 test_plan:
   current_focus:
