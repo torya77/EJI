@@ -306,10 +306,10 @@ const ProviderDashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Clients totaux</p>
-                  <p className="text-2xl font-bold text-gray-900">{(stats || fallbackStats).clients.value}</p>
+                  <p className="text-2xl font-bold text-gray-900">{displayStats.clients.value}</p>
                   <p className="text-xs text-green-600 flex items-center mt-1">
                     <TrendingUp className="w-3 h-3 mr-1" />
-                    +{(stats || fallbackStats).clients.growth}% ce mois
+                    +{displayStats.clients.growth}% ce mois
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
