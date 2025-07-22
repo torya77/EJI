@@ -888,5 +888,371 @@ class TestBackendAPI(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+    # ===== Notifications API Tests =====
+    
+    def test_get_provider_notifications(self):
+        """Test getting notifications for provider"""
+        print("Running test_get_provider_notifications")
+        response = requests.get(f"{BASE_URL}/notifications", headers=self.provider_headers)
+        print(f"Status code: {response.status_code}")
+        print(f"Response: {response.json()}")
+        self.assertEqual(response.status_code, 200)
+        
+        data = response.json()
+        self.assertIn("notifications", data)
+        self.assertIn("total", data)
+        self.assertIn("unread_count", data)
+        self.assertIn("page", data)
+        self.assertIn("per_page", data)
+        self.assertIsInstance(data["notifications"], list)
+        
+        # Verify provider-specific notifications
+        for notification in data["notifications"]:
+            self.assertEqual(notification["recipient_type"], "provider")
+            self.assertEqual(notification["recipient_id"], "provider_1")
+            self.assertIn("id", notification)
+            self.assertIn("type", notification)
+            self.assertIn("title", notification)
+            self.assertIn("message", notification)
+            self.assertIn("priority", notification)
+            self.assertIn("status", notification)
+            self.assertIn("created_at", notification)
+        
+        print("test_get_provider_notifications passed")
+    
+    def test_get_admin_notifications(self):
+        """Test getting notifications for admin"""
+        print("Running test_get_admin_notifications")
+        response = requests.get(f"{BASE_URL}/notifications", headers=self.admin_headers)
+        print(f"Status code: {response.status_code}")
+        print(f"Response: {response.json()}")
+        self.assertEqual(response.status_code, 200)
+        
+        data = response.json()
+        self.assertIn("notifications", data)
+        self.assertIn("total", data)
+        self.assertIn("unread_count", data)
+        
+        # Verify admin-specific notifications
+        for notification in data["notifications"]:
+            self.assertEqual(notification["recipient_type"], "admin")
+            self.assertEqual(notification["recipient_id"], "admin_1")
+        
+        print("test_get_admin_notifications passed")
+    
+    def test_notifications_pagination(self):
+        """Test notifications pagination"""
+        print("Running test_notifications_pagination")
+        
+        # Test first page
+        response = requests.get(f"{BASE_URL}/notifications?page=1&per_page=2", headers=self.provider_headers)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["page"], 1)
+        self.assertEqual(data["per_page"], 2)
+        self.assertLessEqual(len(data["notifications"]), 2)
+        
+        # Test second page if there are enough notifications
+        if data["total"] > 2:
+            response = requests.get(f"{BASE_URL}/notifications?page=2&per_page=2", headers=self.provider_headers)
+            self.assertEqual(response.status_code, 200)
+            data2 = response.json()
+            self.assertEqual(data2["page"], 2)
+            self.assertEqual(data2["per_page"], 2)
+        
+        print("test_notifications_pagination passed")
+    
+    def test_notifications_filters(self):
+        """Test notifications filtering"""
+        print("Running test_notifications_filters")
+        
+        # Test status filter - unread only
+        response = requests.get(f"{BASE_URL}/notifications?unread_only=true", headers=self.provider_headers)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        for notification in data["notifications"]:
+            self.assertEqual(notification["status"], "unread")
+        
+        # Test status filter - read
+        response = requests.get(f"{BASE_URL}/notifications?status=read", headers=self.provider_headers)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        for notification in data["notifications"]:
+            self.assertEqual(notification["status"], "read")
+        
+        # Test priority filter - high
+        response = requests.get(f"{BASE_URL}/notifications?priority=high", headers=self.provider_headers)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        for notification in data["notifications"]:
+            self.assertEqual(notification["priority"], "high")
+        
+        # Test type filter - new_booking
+        response = requests.get(f"{BASE_URL}/notifications?type=new_booking", headers=self.provider_headers)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        for notification in data["notifications"]:
+            self.assertEqual(notification["type"], "new_booking")
+        
+        print("test_notifications_filters passed")
+    
+    def test_notification_stats(self):
+        """Test getting notification statistics"""
+        print("Running test_notification_stats")
+        
+        # Test provider stats
+        response = requests.get(f"{BASE_URL}/notifications/stats", headers=self.provider_headers)
+        print(f"Provider stats - Status code: {response.status_code}")
+        print(f"Provider stats - Response: {response.json()}")
+        self.assertEqual(response.status_code, 200)
+        
+        data = response.json()
+        self.assertIn("total_notifications", data)
+        self.assertIn("unread_count", data)
+        self.assertIn("read_count", data)
+        self.assertIn("archived_count", data)
+        self.assertIn("priority_breakdown", data)
+        self.assertIn("type_breakdown", data)
+        
+        # Verify priority breakdown structure
+        priority_breakdown = data["priority_breakdown"]
+        self.assertIsInstance(priority_breakdown, dict)
+        for priority in ["low", "medium", "high", "urgent"]:
+            self.assertIn(priority, priority_breakdown)
+            self.assertIsInstance(priority_breakdown[priority], int)
+        
+        # Verify type breakdown structure
+        type_breakdown = data["type_breakdown"]
+        self.assertIsInstance(type_breakdown, dict)
+        for count in type_breakdown.values():
+            self.assertIsInstance(count, int)
+            self.assertGreaterEqual(count, 0)
+        
+        # Test admin stats
+        response = requests.get(f"{BASE_URL}/notifications/stats", headers=self.admin_headers)
+        print(f"Admin stats - Status code: {response.status_code}")
+        print(f"Admin stats - Response: {response.json()}")
+        self.assertEqual(response.status_code, 200)
+        
+        print("test_notification_stats passed")
+    
+    def test_mark_notification_as_read(self):
+        """Test marking a notification as read"""
+        print("Running test_mark_notification_as_read")
+        
+        # Get notifications to find an unread one
+        response = requests.get(f"{BASE_URL}/notifications?unread_only=true", headers=self.provider_headers)
+        self.assertEqual(response.status_code, 200)
+        notifications = response.json()["notifications"]
+        
+        if not notifications:
+            print("No unread notifications found, skipping test")
+            return
+        
+        notification_id = notifications[0]["id"]
+        
+        # Mark as read
+        update_data = {"status": "read"}
+        response = requests.put(
+            f"{BASE_URL}/notifications/{notification_id}",
+            json=update_data,
+            headers=self.provider_headers
+        )
+        print(f"Mark as read - Status code: {response.status_code}")
+        print(f"Mark as read - Response: {response.json()}")
+        self.assertEqual(response.status_code, 200)
+        
+        updated_notification = response.json()
+        self.assertEqual(updated_notification["status"], "read")
+        self.assertIsNotNone(updated_notification.get("read_at"))
+        
+        print("test_mark_notification_as_read passed")
+    
+    def test_mark_all_notifications_read(self):
+        """Test marking all notifications as read"""
+        print("Running test_mark_all_notifications_read")
+        
+        response = requests.put(f"{BASE_URL}/notifications/mark-all-read", headers=self.provider_headers)
+        print(f"Status code: {response.status_code}")
+        print(f"Response: {response.json()}")
+        self.assertEqual(response.status_code, 200)
+        
+        data = response.json()
+        self.assertIn("message", data)
+        self.assertIn("notifications as read", data["message"])
+        
+        # Verify all notifications are now read
+        response = requests.get(f"{BASE_URL}/notifications?unread_only=true", headers=self.provider_headers)
+        self.assertEqual(response.status_code, 200)
+        unread_notifications = response.json()["notifications"]
+        self.assertEqual(len(unread_notifications), 0)
+        
+        print("test_mark_all_notifications_read passed")
+    
+    def test_create_notification_admin_only(self):
+        """Test creating notifications (admin only)"""
+        print("Running test_create_notification_admin_only")
+        
+        # Test admin can create notifications
+        notification_data = {
+            "type": "system_alert",
+            "title": "Test System Alert",
+            "message": "This is a test system alert notification",
+            "priority": "high",
+            "recipient_type": "provider",
+            "recipient_id": "provider_1",
+            "metadata": {"test": True}
+        }
+        
+        response = requests.post(
+            f"{BASE_URL}/notifications",
+            json=notification_data,
+            headers=self.admin_headers
+        )
+        print(f"Admin create - Status code: {response.status_code}")
+        print(f"Admin create - Response: {response.json()}")
+        self.assertEqual(response.status_code, 200)
+        
+        created_notification = response.json()
+        self.assertEqual(created_notification["type"], notification_data["type"])
+        self.assertEqual(created_notification["title"], notification_data["title"])
+        self.assertEqual(created_notification["message"], notification_data["message"])
+        self.assertEqual(created_notification["priority"], notification_data["priority"])
+        self.assertEqual(created_notification["recipient_type"], notification_data["recipient_type"])
+        self.assertEqual(created_notification["recipient_id"], notification_data["recipient_id"])
+        self.assertIn("id", created_notification)
+        self.assertEqual(created_notification["sender_id"], "admin_1")
+        
+        # Test provider cannot create notifications
+        response = requests.post(
+            f"{BASE_URL}/notifications",
+            json=notification_data,
+            headers=self.provider_headers
+        )
+        print(f"Provider create - Status code: {response.status_code}")
+        self.assertEqual(response.status_code, 403)
+        
+        print("test_create_notification_admin_only passed")
+    
+    def test_delete_notification(self):
+        """Test deleting a notification"""
+        print("Running test_delete_notification")
+        
+        # Get notifications to find one to delete
+        response = requests.get(f"{BASE_URL}/notifications", headers=self.provider_headers)
+        self.assertEqual(response.status_code, 200)
+        notifications = response.json()["notifications"]
+        
+        if not notifications:
+            print("No notifications found, skipping test")
+            return
+        
+        notification_id = notifications[0]["id"]
+        
+        # Delete notification
+        response = requests.delete(f"{BASE_URL}/notifications/{notification_id}", headers=self.provider_headers)
+        print(f"Delete - Status code: {response.status_code}")
+        print(f"Delete - Response: {response.json()}")
+        self.assertEqual(response.status_code, 200)
+        
+        data = response.json()
+        self.assertIn("message", data)
+        self.assertIn("deleted successfully", data["message"])
+        
+        # Verify notification was deleted
+        response = requests.get(f"{BASE_URL}/notifications", headers=self.provider_headers)
+        self.assertEqual(response.status_code, 200)
+        remaining_notifications = response.json()["notifications"]
+        
+        # Check that the deleted notification is no longer in the list
+        remaining_ids = [n["id"] for n in remaining_notifications]
+        self.assertNotIn(notification_id, remaining_ids)
+        
+        print("test_delete_notification passed")
+    
+    def test_notifications_authentication(self):
+        """Test notifications authentication requirements"""
+        print("Running test_notifications_authentication")
+        
+        # Test without token
+        response = requests.get(f"{BASE_URL}/notifications")
+        self.assertEqual(response.status_code, 401)
+        
+        # Test with invalid token
+        invalid_headers = {"Authorization": "Bearer invalid_token"}
+        response = requests.get(f"{BASE_URL}/notifications", headers=invalid_headers)
+        self.assertEqual(response.status_code, 401)
+        
+        # Test stats without token
+        response = requests.get(f"{BASE_URL}/notifications/stats")
+        self.assertEqual(response.status_code, 401)
+        
+        # Test mark all read without token
+        response = requests.put(f"{BASE_URL}/notifications/mark-all-read")
+        self.assertEqual(response.status_code, 401)
+        
+        print("test_notifications_authentication passed")
+    
+    def test_notification_not_found(self):
+        """Test error handling for non-existent notifications"""
+        print("Running test_notification_not_found")
+        
+        # Try to update non-existent notification
+        response = requests.put(
+            f"{BASE_URL}/notifications/non-existent-id",
+            json={"status": "read"},
+            headers=self.provider_headers
+        )
+        self.assertEqual(response.status_code, 404)
+        
+        # Try to delete non-existent notification
+        response = requests.delete(f"{BASE_URL}/notifications/non-existent-id", headers=self.provider_headers)
+        self.assertEqual(response.status_code, 404)
+        
+        print("test_notification_not_found passed")
+    
+    def test_notification_types_and_priorities(self):
+        """Test that notifications contain expected types and priorities"""
+        print("Running test_notification_types_and_priorities")
+        
+        # Test provider notifications contain expected types
+        response = requests.get(f"{BASE_URL}/notifications", headers=self.provider_headers)
+        self.assertEqual(response.status_code, 200)
+        notifications = response.json()["notifications"]
+        
+        provider_types = set()
+        priorities = set()
+        
+        for notification in notifications:
+            provider_types.add(notification["type"])
+            priorities.add(notification["priority"])
+        
+        # Check for expected provider notification types
+        expected_provider_types = {
+            "new_booking", "provider_approved", "payment_received", "review_received"
+        }
+        self.assertTrue(provider_types.intersection(expected_provider_types))
+        
+        # Check for expected priorities
+        expected_priorities = {"urgent", "high", "medium", "low"}
+        self.assertTrue(priorities.issubset(expected_priorities))
+        
+        # Test admin notifications contain expected types
+        response = requests.get(f"{BASE_URL}/notifications", headers=self.admin_headers)
+        self.assertEqual(response.status_code, 200)
+        admin_notifications = response.json()["notifications"]
+        
+        admin_types = set()
+        for notification in admin_notifications:
+            admin_types.add(notification["type"])
+        
+        # Check for expected admin notification types
+        expected_admin_types = {
+            "new_provider_registration", "provider_needs_approval"
+        }
+        self.assertTrue(admin_types.intersection(expected_admin_types))
+        
+        print("test_notification_types_and_priorities passed")
+
 if __name__ == "__main__":
     unittest.main()
