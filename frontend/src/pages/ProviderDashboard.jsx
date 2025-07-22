@@ -205,13 +205,16 @@ const ProviderDashboard = () => {
     );
   }
 
-  // Fallback data if API fails
+  // Fallback data if API fails - moved before usage
   const fallbackStats = {
     revenue: { value: 45230, growth: +12, currency: 'DZD' },
     bookings: { value: 28, growth: +8 },
     rating: { value: 4.8, total: 156 },
     clients: { value: 342, growth: +15 }
   };
+
+  // Ensure we always have valid stats data
+  const displayStats = stats || fallbackStats;
 
   const getStatusColor = (status) => {
     switch (status) {
