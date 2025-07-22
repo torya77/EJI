@@ -435,60 +435,100 @@ const ProviderDashboard = () => {
                     <CardTitle>Réservations récentes</CardTitle>
                     <CardDescription>Vos dernières réservations</CardDescription>
                   </div>
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" onClick={() => setActiveTab('bookings')}>
                     Voir tout
                   </Button>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {recentBookings.slice(0, 3).map(booking => (
-                      <div key={booking.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between mb-1">
-                            <h4 className="font-medium text-gray-900">{booking.service}</h4>
-                            <Badge className={`text-xs ${getStatusColor(booking.status)}`}>
-                              {booking.status.replace('_', ' ')}
-                            </Badge>
+                    {bookings.slice(0, 3).map(booking => {
+                      const commission = calculateCommission(booking.amount || 0, profile?.provider_type || 'guide_local');
+                      return (
+                        <div key={booking.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between mb-1">
+                              <h4 className="font-medium text-gray-900">{booking.service_name || booking.activity_name}</h4>
+                              <Badge className={`text-xs ${getStatusColor(booking.status)}`}>
+                                {booking.status?.replace('_', ' ')}
+                              </Badge>
+                            </div>
+                            <p className="text-sm text-gray-600">{booking.customer_name}</p>
+                            <div className="flex items-center space-x-4 text-xs text-gray-500 mt-1">
+                              <span className="flex items-center">
+                                <Calendar className="w-3 h-3 mr-1" />
+                                {booking.booking_date ? new Date(booking.booking_date).toLocaleDateString('fr-FR') : 'Date non définie'}
+                              </span>
+                              <span className="flex items-center">
+                                <Clock className="w-3 h-3 mr-1" />
+                                {booking.booking_time || 'Heure non définie'}
+                              </span>
+                              <span className="flex items-center">
+                                <Users className="w-3 h-3 mr-1" />
+                                {booking.participants || 1}
+                              </span>
+                            </div>
                           </div>
-                          <p className="text-sm text-gray-600">{booking.client}</p>
-                          <div className="flex items-center space-x-4 text-xs text-gray-500 mt-1">
-                            <span className="flex items-center">
-                              <Calendar className="w-3 h-3 mr-1" />
-                              {booking.date}
-                            </span>
-                            <span className="flex items-center">
-                              <Clock className="w-3 h-3 mr-1" />
-                              {booking.time}
-                            </span>
-                            <span className="flex items-center">
-                              <Users className="w-3 h-3 mr-1" />
-                              {booking.guests}
-                            </span>
+                          <div className="text-right ml-4">
+                            <div className="font-semibold text-green-600">
+                              {formatCurrency(commission.earnings)} DZD
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              (Total: {formatCurrency(booking.amount || 0)})
+                            </div>
                           </div>
                         </div>
-                        <div className="text-right ml-4">
-                          <div className="font-semibold text-green-600">
-                            {formatCurrency(booking.amount)} DZD
-                          </div>
-                        </div>
+                      );
+                    })}
+                    
+                    {bookings.length === 0 && (
+                      <div className="text-center py-8">
+                        <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                        <p className="text-gray-500">Aucune réservation récente</p>
+                        <p className="text-sm text-gray-400">Vos réservations apparaîtront ici</p>
                       </div>
-                    ))}
+                    )}
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Performance Chart */}
+              {/* Commission Transparency */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Performance du mois</CardTitle>
-                  <CardDescription>Revenus et réservations</CardDescription>
+                  <CardTitle>Transparence des Commissions</CardTitle>
+                  <CardDescription>Vos revenus et commissions EJI</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="h-64 bg-gradient-to-br from-green-50 to-blue-50 rounded-lg flex items-center justify-center">
-                    <div className="text-center">
-                      <BarChart3 className="w-16 h-16 text-green-600 mx-auto mb-4" />
-                      <p className="text-gray-600">Graphique des performances</p>
-                      <p className="text-sm text-gray-500">Données en temps réel</p>
+                  <div className="space-y-4">
+                    {profile && (
+                      <div className="bg-green-50 p-4 rounded-lg">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm font-medium text-green-900">Votre commission</span>
+                          <span className="text-lg font-bold text-green-600">
+                            {commissionRates[profile.provider_type] || 15}%
+                          </span>
+                        </div>
+                        <p className="text-xs text-green-700">
+                          Type: {profile.provider_type?.replace('_', ' ').toUpperCase()}
+                        </p>
+                      </div>
+                    )}
+                    
+                    <div className="space-y-3">
+                      <h4 className="font-medium text-gray-900">Exemple de calcul:</h4>
+                      <div className="bg-gray-50 p-3 rounded-lg text-sm">
+                        <div className="flex justify-between mb-1">
+                          <span>Prix du service:</span>
+                          <span className="font-medium">10,000 DZD</span>
+                        </div>
+                        <div className="flex justify-between mb-1 text-red-600">
+                          <span>Commission EJI ({commissionRates[profile?.provider_type] || 15}%):</span>
+                          <span className="font-medium">-{formatCurrency((10000 * (commissionRates[profile?.provider_type] || 15)) / 100)} DZD</span>
+                        </div>
+                        <div className="flex justify-between text-green-600 font-semibold pt-2 border-t">
+                          <span>Vos revenus:</span>
+                          <span>{formatCurrency(10000 - ((10000 * (commissionRates[profile?.provider_type] || 15)) / 100))} DZD</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
