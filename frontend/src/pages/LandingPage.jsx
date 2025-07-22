@@ -368,7 +368,7 @@ const LandingPage = () => {
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
             <Link to="/events">
-              <Button className="bg-white text-green-600 hover:bg-gray-100 px-8 py-4 text-lg rounded-full font-semibold transform hover:scale-105 transition-all">
+              <Button className="bg-white text-red-600 hover:bg-gray-100 hover:text-red-700 px-8 py-4 text-lg rounded-full font-semibold transform hover:scale-105 transition-all shadow-lg">
                 <Compass className="w-5 h-5 mr-2" />
                 Explorer Maintenant
               </Button>
