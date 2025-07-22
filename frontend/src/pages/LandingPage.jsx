@@ -191,7 +191,7 @@ const LandingPage = () => {
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
             <Link to="/events">
-              <Button className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 text-lg rounded-full shadow-lg transform hover:scale-105 transition-all">
+              <Button className="bg-gradient-to-r from-green-600 via-red-600 to-green-700 hover:from-green-700 hover:via-red-700 hover:to-green-800 text-white px-8 py-4 text-lg rounded-full shadow-lg transform hover:scale-105 transition-all">
                 <Play className="w-5 h-5 mr-2" />
                 Commencer l'Aventure
               </Button>
