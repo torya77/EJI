@@ -310,9 +310,21 @@ metadata:
         agent: "testing"
         comment: "Comprehensive testing of Provider Dashboard API endpoints completed successfully. All core functionality verified: (1) Dashboard Stats API returns correct data structure with revenue (157,500 DZD), bookings (45), ratings (4.9), and commission calculations (15% for guide provider). (2) Profile Management APIs work correctly - GET /api/providers/me returns complete profile data, PUT /api/providers/me successfully updates profile information. (3) Activity Management APIs fully functional - GET /api/providers/activities returns activity list with commission calculations, POST /api/providers/activities creates new activities with correct commission preview (15% commission rate, proper earnings calculation). (4) Booking Management APIs working - GET /api/providers/bookings returns booking list with customer info and payment details, PUT /api/providers/bookings/{id}/status successfully updates booking status (tested confirmed→cancelled→confirmed). (5) Authentication with Bearer provider_1_token works correctly for all protected endpoints. (6) Commission calculations are accurate across all endpoints - 15% commission rate properly applied with correct provider earnings and EJI commission amounts. All API integrations for the extended Provider Dashboard are working correctly."
 
+  - task: "Notifications System"
+    implemented: true
+    working: false
+    file: "/app/backend/routes/notifications.py, /app/frontend/src/components/NotificationCenter.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Implemented complete notifications system with backend API and frontend components. Backend includes NotificationType enum with provider/admin notifications, NotificationPriority levels, full CRUD operations, sample notification data, and authentication. Frontend includes NotificationCenter component with real-time polling, mark as read, delete, priority badges, and integration into Header. Created Dialog UI component and installed @radix-ui dependencies. Requires backend testing to verify API endpoints work correctly."
+
 test_plan:
   current_focus:
-    - "Provider Dashboard Extension"
+    - "Notifications System"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -334,3 +346,5 @@ agent_communication:
     message: "Significantly extended ProviderDashboard.jsx with comprehensive functionality: (1) Real-time API integration for stats, profile, activities, and bookings (2) Commission transparency calculations by provider type (3) Activity creation modal with detailed form and commission preview (4) Profile management modal (5) Booking status management (6) Comprehensive UI components for all provider operations (7) Fallback handling for API failures (8) Created necessary UI components (Select) and installed @radix-ui/react-select dependency. Dashboard is now a fully functional provider management interface but needs backend testing to verify API integrations work correctly."
   - agent: "testing"
     message: "Successfully completed comprehensive testing of the extended Provider Dashboard functionality. All Provider API endpoints are working correctly with proper authentication using Bearer provider_1_token. Key findings: (1) Dashboard Stats API returns complete data structure including revenue (157,500 DZD), bookings (45), ratings (4.9), and accurate commission calculations. (2) Profile Management APIs fully functional for both retrieval and updates. (3) Activity Management APIs working correctly with proper commission calculations (15% rate for guide provider) and activity creation with validation. (4) Booking Management APIs operational with successful status updates and customer information display. (5) Commission calculations are mathematically correct across all endpoints. (6) Authentication is properly implemented for all protected endpoints. The Provider Dashboard backend integration is fully functional and ready for production use."
+  - agent: "main"
+    message: "Implemented comprehensive notifications system: (1) Backend API with full CRUD operations (/api/notifications) including GET notifications with filters, PUT mark as read, POST create notification, DELETE notification (2) NotificationType enum covering provider/admin notifications (new_booking, provider_approved, payment_received, new_provider_registration, etc.) (3) Priority levels (urgent, high, medium, low) and status management (unread, read, archived) (4) Sample notification data for development (5) Frontend NotificationCenter component with real-time polling every 30s, unread count badge, mark all read, individual delete, priority badges, and action buttons (6) Integrated NotificationCenter into Header between language selector and user menu (7) Created Dialog UI component and installed @radix-ui/react-dialog dependency. Complete notification system ready for backend testing."
