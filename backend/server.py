@@ -15,6 +15,7 @@ from .routes.users import router as users_router
 from .routes.translation import router as translation_router
 from .routes.admin import router as admin_router
 from .routes.providers import router as providers_router
+from .routes.notifications import router as notifications_router
 
 # Import database functions
 from .database import init_database
