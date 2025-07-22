@@ -17,6 +17,7 @@ import CurrencyConverter from './CurrencyConverter';
 import EJIServicesMenu from './EJIServicesMenu';
 import InteractiveGuide from './InteractiveGuide';
 import MobileMenu from './MobileMenu';
+import NotificationCenter from './NotificationCenter';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const Header = () => {
