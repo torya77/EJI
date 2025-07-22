@@ -129,7 +129,9 @@ def get_user_role_from_token(token: str) -> tuple[str, str]:
         raise HTTPException(status_code=401, detail="Invalid token")
 
 # Dependencies
-async def get_current_user(authorization: str = Depends(lambda: None)):
+from fastapi import Header
+
+async def get_current_user(authorization: str = Header(None)):
     """Get current user from token"""
     # For development, we'll use a simple token system
     # In production, this would verify JWT tokens properly
