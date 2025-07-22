@@ -405,7 +405,7 @@ const LandingPage = () => {
           <div className="grid md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
               <div className="flex items-center mb-4">
-                <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center mr-3">
+                <div className="w-10 h-10 bg-gradient-to-r from-green-600 to-red-600 rounded-lg flex items-center justify-center mr-3">
                   <span className="text-white font-bold text-lg">EJI</span>
                 </div>
                 <span className="text-2xl font-bold">Explore Journey Intelligence</span>
