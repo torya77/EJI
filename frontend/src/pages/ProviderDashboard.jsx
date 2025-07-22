@@ -249,11 +249,11 @@ const ProviderDashboard = () => {
                 <div>
                   <p className="text-sm font-medium text-gray-600">Revenus ce mois</p>
                   <p className="text-2xl font-bold text-gray-900">
-                    {formatCurrency(stats.revenue.value)} {stats.revenue.currency}
+                    {formatCurrency((stats || fallbackStats).revenue.value)} {(stats || fallbackStats).revenue.currency}
                   </p>
                   <p className="text-xs text-green-600 flex items-center mt-1">
                     <TrendingUp className="w-3 h-3 mr-1" />
-                    +{stats.revenue.growth}% vs mois dernier
+                    +{(stats || fallbackStats).revenue.growth}% vs mois dernier
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
@@ -268,10 +268,10 @@ const ProviderDashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Réservations</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.bookings.value}</p>
+                  <p className="text-2xl font-bold text-gray-900">{(stats || fallbackStats).bookings.value}</p>
                   <p className="text-xs text-green-600 flex items-center mt-1">
                     <TrendingUp className="w-3 h-3 mr-1" />
-                    +{stats.bookings.growth} cette semaine
+                    +{(stats || fallbackStats).bookings.growth} cette semaine
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -286,9 +286,9 @@ const ProviderDashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Note moyenne</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.rating.value}</p>
+                  <p className="text-2xl font-bold text-gray-900">{(stats || fallbackStats).rating.value}</p>
                   <p className="text-xs text-gray-500 mt-1">
-                    {stats.rating.total} avis clients
+                    {(stats || fallbackStats).rating.total} avis clients
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
@@ -303,10 +303,10 @@ const ProviderDashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Clients totaux</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.clients.value}</p>
+                  <p className="text-2xl font-bold text-gray-900">{(stats || fallbackStats).clients.value}</p>
                   <p className="text-xs text-green-600 flex items-center mt-1">
                     <TrendingUp className="w-3 h-3 mr-1" />
-                    +{stats.clients.growth}% ce mois
+                    +{(stats || fallbackStats).clients.growth}% ce mois
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
@@ -319,12 +319,111 @@ const ProviderDashboard = () => {
 
         {/* Main Content */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
-            <TabsTrigger value="bookings">Réservations</TabsTrigger>
-            <TabsTrigger value="services">Mes services</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
-          </TabsList>
+          <div className="flex justify-between items-center">
+            <TabsList className="grid w-full max-w-md grid-cols-4">
+              <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
+              <TabsTrigger value="bookings">Réservations</TabsTrigger>
+              <TabsTrigger value="services">Mes services</TabsTrigger>
+              <TabsTrigger value="analytics">Analytics</TabsTrigger>
+            </TabsList>
+            
+            <div className="flex space-x-2">
+              <Dialog open={showProfile} onOpenChange={setShowProfile}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    <User className="w-4 h-4 mr-2" />
+                    Profil
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>Modifier le profil</DialogTitle>
+                    <DialogDescription>
+                      Mettez à jour vos informations de prestataire
+                    </DialogDescription>
+                  </DialogHeader>
+                  
+                  <div className="space-y-4 py-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="business_name">Nom de l'entreprise</Label>
+                      <Input
+                        id="business_name"
+                        value={profileUpdate.business_name || ''}
+                        onChange={(e) => setProfileUpdate({...profileUpdate, business_name: e.target.value})}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="description">Description</Label>
+                      <Textarea
+                        id="description"
+                        value={profileUpdate.description || ''}
+                        onChange={(e) => setProfileUpdate({...profileUpdate, description: e.target.value})}
+                        rows={3}
+                      />
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="phone">Téléphone</Label>
+                        <Input
+                          id="phone"
+                          value={profileUpdate.phone || ''}
+                          onChange={(e) => setProfileUpdate({...profileUpdate, phone: e.target.value})}
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="city">Ville</Label>
+                        <Input
+                          id="city"
+                          value={profileUpdate.city || ''}
+                          onChange={(e) => setProfileUpdate({...profileUpdate, city: e.target.value})}
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="address">Adresse</Label>
+                      <Input
+                        id="address"
+                        value={profileUpdate.address || ''}
+                        onChange={(e) => setProfileUpdate({...profileUpdate, address: e.target.value})}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="website">Site web (optionnel)</Label>
+                      <Input
+                        id="website"
+                        value={profileUpdate.website || ''}
+                        onChange={(e) => setProfileUpdate({...profileUpdate, website: e.target.value})}
+                        placeholder="https://exemple.com"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="flex justify-end space-x-2">
+                    <Button variant="outline" onClick={() => setShowProfile(false)}>
+                      Annuler
+                    </Button>
+                    <Button onClick={handleUpdateProfile}>
+                      Sauvegarder
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+              
+              {profile && (
+                <div className="flex items-center space-x-2 px-3 py-2 bg-green-50 rounded-lg">
+                  <div className="text-sm">
+                    <p className="font-medium text-green-900">{profile.business_name || 'Prestataire'}</p>
+                    <p className="text-green-600">Commission: {commissionRates[profile.provider_type] || 15}%</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
 
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
