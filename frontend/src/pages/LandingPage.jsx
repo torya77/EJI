@@ -324,7 +324,7 @@ const LandingPage = () => {
               Témoignages Clients
             </Badge>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Ce que nos <span className="text-green-600">Voyageurs</span> disent
+              Ce que nos <span className="bg-gradient-to-r from-green-600 via-red-600 to-green-600 bg-clip-text text-transparent">Voyageurs</span> disent
             </h2>
           </div>
           
