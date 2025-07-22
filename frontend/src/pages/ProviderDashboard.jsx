@@ -252,11 +252,11 @@ const ProviderDashboard = () => {
                 <div>
                   <p className="text-sm font-medium text-gray-600">Revenus ce mois</p>
                   <p className="text-2xl font-bold text-gray-900">
-                    {formatCurrency((stats || fallbackStats).revenue.value)} {(stats || fallbackStats).revenue.currency}
+                    {formatCurrency(displayStats.revenue.value)} {displayStats.revenue.currency}
                   </p>
                   <p className="text-xs text-green-600 flex items-center mt-1">
                     <TrendingUp className="w-3 h-3 mr-1" />
-                    +{(stats || fallbackStats).revenue.growth}% vs mois dernier
+                    +{displayStats.revenue.growth}% vs mois dernier
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
