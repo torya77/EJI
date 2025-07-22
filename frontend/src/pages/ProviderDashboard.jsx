@@ -289,9 +289,9 @@ const ProviderDashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Note moyenne</p>
-                  <p className="text-2xl font-bold text-gray-900">{(stats || fallbackStats).rating.value}</p>
+                  <p className="text-2xl font-bold text-gray-900">{displayStats.rating.value}</p>
                   <p className="text-xs text-gray-500 mt-1">
-                    {(stats || fallbackStats).rating.total} avis clients
+                    {displayStats.rating.total} avis clients
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
