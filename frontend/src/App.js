@@ -3,6 +3,7 @@ import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import Home from "./pages/Home";
+import LandingPage from "./pages/LandingPage";
 import Events from "./pages/Events";
 import Restaurants from "./pages/Restaurants";
 import Marketplace from "./pages/Marketplace";
