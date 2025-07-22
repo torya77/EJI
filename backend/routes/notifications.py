@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends, Query
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from typing import Optional, List
 from datetime import datetime, timedelta
 import uuid
@@ -15,6 +16,7 @@ from ..models.notification import (
 )
 
 router = APIRouter(prefix="/notifications", tags=["notifications"])
+security = HTTPBearer()
 
 # Mock database for notifications
 notifications_db = []
