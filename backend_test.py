@@ -5,7 +5,7 @@ import uuid
 from datetime import datetime
 
 # Base URL from frontend/.env
-BASE_URL = "https://fac0c436-f947-43bb-a81c-55027c60b773.preview.emergentagent.com/api"
+BASE_URL = "https://7571d7ea-fbbc-43a7-81be-528f50b425c7.preview.emergentagent.com/api"
 
 class TestBackendAPI(unittest.TestCase):
     """Test suite for the EJI backend API"""
