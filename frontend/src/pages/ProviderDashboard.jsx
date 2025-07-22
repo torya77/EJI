@@ -639,59 +639,213 @@ const ProviderDashboard = () => {
                   <CardTitle>Mes services</CardTitle>
                   <CardDescription>Gérez vos offres et services</CardDescription>
                 </div>
-                <Button className="bg-green-600 hover:bg-green-700">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Ajouter un service
-                </Button>
-              </CardHeader>
-              <CardContent>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {services.map(service => (
-                    <Card key={service.id} className="hover:shadow-lg transition-shadow">
-                      <CardContent className="p-6">
-                        <div className="flex items-center justify-between mb-4">
-                          <Badge variant="outline">{service.type}</Badge>
-                          <Badge className={`${getStatusColor(service.status)}`}>
-                            {service.status}
-                          </Badge>
+                
+                <Dialog open={showCreateActivity} onOpenChange={setShowCreateActivity}>
+                  <DialogTrigger asChild>
+                    <Button className="bg-green-600 hover:bg-green-700">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Ajouter un service
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-lg">
+                    <DialogHeader>
+                      <DialogTitle>Créer un nouveau service</DialogTitle>
+                      <DialogDescription>
+                        Ajoutez une nouvelle activité ou service à votre offre
+                      </DialogDescription>
+                    </DialogHeader>
+                    
+                    <div className="space-y-4 py-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="name">Nom du service</Label>
+                        <Input
+                          id="name"
+                          value={newActivity.name}
+                          onChange={(e) => setNewActivity({...newActivity, name: e.target.value})}
+                          placeholder="Ex: Visite guidée de la Casbah"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="description">Description</Label>
+                        <Textarea
+                          id="description"
+                          value={newActivity.description}
+                          onChange={(e) => setNewActivity({...newActivity, description: e.target.value})}
+                          rows={3}
+                          placeholder="Décrivez votre service..."
+                        />
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="category">Catégorie</Label>
+                          <Select value={newActivity.category} onValueChange={(value) => setNewActivity({...newActivity, category: value})}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Choisir..." />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="tour">Visite guidée</SelectItem>
+                              <SelectItem value="restaurant">Restaurant</SelectItem>
+                              <SelectItem value="experience">Expérience</SelectItem>
+                              <SelectItem value="accommodation">Hébergement</SelectItem>
+                              <SelectItem value="transport">Transport</SelectItem>
+                              <SelectItem value="workshop">Atelier</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </div>
                         
-                        <h3 className="font-semibold text-gray-900 mb-2">{service.name}</h3>
+                        <div className="space-y-2">
+                          <Label htmlFor="price">Prix (DZD)</Label>
+                          <Input
+                            id="price"
+                            type="number"
+                            value={newActivity.price}
+                            onChange={(e) => setNewActivity({...newActivity, price: e.target.value})}
+                            placeholder="0"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="duration">Durée (heures)</Label>
+                          <Input
+                            id="duration"
+                            type="number"
+                            value={newActivity.duration}
+                            onChange={(e) => setNewActivity({...newActivity, duration: e.target.value})}
+                            placeholder="1"
+                          />
+                        </div>
                         
-                        <div className="space-y-2 mb-4">
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="text-gray-600">Prix:</span>
-                            <span className="font-semibold">{formatCurrency(service.price)} DZD</span>
+                        <div className="space-y-2">
+                          <Label htmlFor="max_participants">Participants max</Label>
+                          <Input
+                            id="max_participants"
+                            type="number"
+                            value={newActivity.max_participants}
+                            onChange={(e) => setNewActivity({...newActivity, max_participants: e.target.value})}
+                            placeholder="10"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="location">Lieu</Label>
+                        <Input
+                          id="location"
+                          value={newActivity.location}
+                          onChange={(e) => setNewActivity({...newActivity, location: e.target.value})}
+                          placeholder="Ex: Casbah d'Alger"
+                        />
+                      </div>
+
+                      {newActivity.price && (
+                        <div className="bg-green-50 p-3 rounded-lg">
+                          <div className="flex items-center space-x-2 mb-2">
+                            <Percent className="w-4 h-4 text-green-600" />
+                            <span className="text-sm font-medium text-green-900">Calcul de commission</span>
                           </div>
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="text-gray-600">Réservations:</span>
-                            <span className="font-semibold">{service.bookings}</span>
-                          </div>
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="text-gray-600">Note:</span>
-                            <div className="flex items-center">
-                              <Star className="w-4 h-4 text-yellow-500 fill-current mr-1" />
-                              <span className="font-semibold">{service.rating}</span>
+                          <div className="text-sm text-green-700">
+                            <div className="flex justify-between">
+                              <span>Prix du service:</span>
+                              <span>{formatCurrency(parseFloat(newActivity.price) || 0)} DZD</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span>Commission EJI ({commissionRates[profile?.provider_type] || 15}%):</span>
+                              <span>-{formatCurrency(((parseFloat(newActivity.price) || 0) * (commissionRates[profile?.provider_type] || 15)) / 100)} DZD</span>
+                            </div>
+                            <div className="flex justify-between font-semibold pt-2 border-t border-green-200">
+                              <span>Vos revenus:</span>
+                              <span>{formatCurrency((parseFloat(newActivity.price) || 0) - (((parseFloat(newActivity.price) || 0) * (commissionRates[profile?.provider_type] || 15)) / 100))} DZD</span>
                             </div>
                           </div>
                         </div>
-                        
-                        <div className="flex space-x-2">
-                          <Button variant="outline" size="sm" className="flex-1">
-                            <Edit className="w-4 h-4 mr-1" />
-                            Modifier
-                          </Button>
-                          <Button variant="outline" size="sm">
-                            <Eye className="w-4 h-4" />
-                          </Button>
-                          <Button variant="outline" size="sm">
-                            <Settings className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+                      )}
+                    </div>
+                    
+                    <div className="flex justify-end space-x-2">
+                      <Button variant="outline" onClick={() => setShowCreateActivity(false)}>
+                        Annuler
+                      </Button>
+                      <Button onClick={handleCreateActivity}>
+                        Créer le service
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {activities.map(activity => {
+                    const commission = calculateCommission(activity.price || 0, profile?.provider_type || 'guide_local');
+                    return (
+                      <Card key={activity.id} className="hover:shadow-lg transition-shadow">
+                        <CardContent className="p-6">
+                          <div className="flex items-center justify-between mb-4">
+                            <Badge variant="outline">{activity.category}</Badge>
+                            <Badge className={`${getStatusColor(activity.status)}`}>
+                              {activity.status}
+                            </Badge>
+                          </div>
+                          
+                          <h3 className="font-semibold text-gray-900 mb-2">{activity.name}</h3>
+                          
+                          <div className="space-y-2 mb-4">
+                            <div className="flex items-center justify-between text-sm">
+                              <span className="text-gray-600">Prix:</span>
+                              <span className="font-semibold">{formatCurrency(activity.price)} DZD</span>
+                            </div>
+                            <div className="flex items-center justify-between text-sm">
+                              <span className="text-gray-600">Vos revenus:</span>
+                              <span className="font-semibold text-green-600">{formatCurrency(commission.earnings)} DZD</span>
+                            </div>
+                            <div className="flex items-center justify-between text-sm">
+                              <span className="text-gray-600">Réservations:</span>
+                              <span className="font-semibold">{activity.bookings || 0}</span>
+                            </div>
+                            <div className="flex items-center justify-between text-sm">
+                              <span className="text-gray-600">Note:</span>
+                              <div className="flex items-center">
+                                <Star className="w-4 h-4 text-yellow-500 fill-current mr-1" />
+                                <span className="font-semibold">{activity.rating || 'N/A'}</span>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="flex space-x-2">
+                            <Button variant="outline" size="sm" className="flex-1">
+                              <Edit className="w-4 h-4 mr-1" />
+                              Modifier
+                            </Button>
+                            <Button variant="outline" size="sm">
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                            <Button variant="outline" size="sm">
+                              <Settings className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
                 </div>
+                
+                {activities.length === 0 && (
+                  <div className="text-center py-12">
+                    <Activity className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun service créé</h3>
+                    <p className="text-gray-500 mb-4">Commencez par créer votre premier service pour attirer des clients.</p>
+                    <Button 
+                      onClick={() => setShowCreateActivity(true)}
+                      className="bg-green-600 hover:bg-green-700"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Créer mon premier service
+                    </Button>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
