@@ -118,6 +118,9 @@ const Header = () => {
               {/* Language Selector */}
               <LanguageSelector />
 
+              {/* Notification Center */}
+              <NotificationCenter />
+
               {/* User Menu */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
