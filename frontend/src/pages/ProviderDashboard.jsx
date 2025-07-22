@@ -557,51 +557,75 @@ const ProviderDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {recentBookings.map(booking => (
-                    <div key={booking.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between mb-2">
-                          <h4 className="font-semibold text-gray-900">{booking.service}</h4>
-                          <Badge className={`${getStatusColor(booking.status)}`}>
-                            {booking.status.replace('_', ' ')}
-                          </Badge>
+                  {bookings.map(booking => {
+                    const commission = calculateCommission(booking.amount || 0, profile?.provider_type || 'guide_local');
+                    return (
+                      <div key={booking.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between mb-2">
+                            <h4 className="font-semibold text-gray-900">{booking.service_name || booking.activity_name}</h4>
+                            <Badge className={`${getStatusColor(booking.status)}`}>
+                              {booking.status?.replace('_', ' ')}
+                            </Badge>
+                          </div>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600">
+                            <div>
+                              <span className="font-medium">Client:</span> {booking.customer_name || 'N/A'}
+                            </div>
+                            <div>
+                              <span className="font-medium">Date:</span> {booking.booking_date ? new Date(booking.booking_date).toLocaleDateString('fr-FR') : 'N/A'}
+                            </div>
+                            <div>
+                              <span className="font-medium">Heure:</span> {booking.booking_time || 'N/A'}
+                            </div>
+                            <div>
+                              <span className="font-medium">Invités:</span> {booking.participants || 1}
+                            </div>
+                          </div>
+                          <div className="mt-2 text-xs text-gray-500">
+                            <span className="font-medium">Commission EJI:</span> {formatCurrency(commission.commission)} DZD ({commission.rate}%)
+                          </div>
                         </div>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600">
-                          <div>
-                            <span className="font-medium">Client:</span> {booking.client}
+                        <div className="flex items-center space-x-4 ml-6">
+                          <div className="text-right">
+                            <div className="font-bold text-green-600">
+                              {formatCurrency(commission.earnings)} DZD
+                            </div>
+                            <div className="text-xs text-gray-500">#{booking.id}</div>
                           </div>
-                          <div>
-                            <span className="font-medium">Date:</span> {booking.date}
-                          </div>
-                          <div>
-                            <span className="font-medium">Heure:</span> {booking.time}
-                          </div>
-                          <div>
-                            <span className="font-medium">Invités:</span> {booking.guests}
+                          <div className="flex space-x-1">
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => handleBookingStatusUpdate(booking.id, 'confirmed')}
+                              disabled={booking.status === 'confirmed'}
+                            >
+                              <CheckCircle className="w-4 h-4" />
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => handleBookingStatusUpdate(booking.id, 'cancelled')}
+                              disabled={booking.status === 'cancelled'}
+                            >
+                              <XCircle className="w-4 h-4" />
+                            </Button>
+                            <Button variant="ghost" size="sm">
+                              <MessageCircle className="w-4 h-4" />
+                            </Button>
                           </div>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-4 ml-6">
-                        <div className="text-right">
-                          <div className="font-bold text-green-600">
-                            {formatCurrency(booking.amount)} DZD
-                          </div>
-                          <div className="text-xs text-gray-500">#{booking.id}</div>
-                        </div>
-                        <div className="flex space-x-1">
-                          <Button variant="ghost" size="sm">
-                            <Eye className="w-4 h-4" />
-                          </Button>
-                          <Button variant="ghost" size="sm">
-                            <MessageCircle className="w-4 h-4" />
-                          </Button>
-                          <Button variant="ghost" size="sm">
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </div>
+                    );
+                  })}
+                  
+                  {bookings.length === 0 && (
+                    <div className="text-center py-12">
+                      <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">Aucune réservation</h3>
+                      <p className="text-gray-500">Vos réservations apparaîtront ici une fois que les clients commenceront à réserver vos services.</p>
                     </div>
-                  ))}
+                  )}
                 </div>
               </CardContent>
             </Card>
