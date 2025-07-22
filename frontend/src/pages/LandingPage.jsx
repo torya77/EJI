@@ -80,7 +80,7 @@ const LandingPage = () => {
       description: "Support en 5 langues : Français, Arabe, Anglais, Allemand, Coréen"
     },
     {
-      icon: <Shield className="w-8 h-8 text-emerald-600" />,
+      icon: <Shield className="w-8 h-8 text-red-500" />,
       title: "Qualité Garantie",
       description: "Prestataires certifiés et approuvés par notre équipe qualité"
     }
