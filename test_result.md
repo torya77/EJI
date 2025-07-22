@@ -295,8 +295,21 @@ metadata:
   test_sequence: 1
   run_ui: false
 
+  - task: "Provider Dashboard Extension"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/pages/ProviderDashboard.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Extended ProviderDashboard with full API integration, commission transparency calculations, activity creation, profile management, and booking management. Added real-time data loading from provider APIs, commission rates by provider type, and comprehensive UI for managing provider services. Requires backend testing to verify API integrations."
+
 test_plan:
-  current_focus: []
+  current_focus:
+    - "Provider Dashboard Extension"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -314,3 +327,5 @@ agent_communication:
     message: "Completed frontend testing for the EJI application. Navigation and menu functionality work correctly, including the EJI Services menu with its white opaque background. Admin dashboard, providers management, and activities management pages all load and function correctly. The commission calculations are displayed correctly (15% for Guide Local, 12% for Restaurant, 10% for Hébergement). The responsive design works well on desktop, tablet, and mobile screen sizes. However, there is an issue with the Provider Registration form - while Step 1 loads correctly showing provider types with commission rates, navigation between steps is not working properly. After filling Step 1 and clicking Next, Step 2 doesn't load correctly. This issue needs to be fixed."
   - agent: "testing"
     message: "Completed testing of the Provider Registration form after fixes. The form now works correctly through all steps. Step 1 shows all provider types with correct commission rates. Step 2 allows selecting specialties and languages. Step 3 displays the quality charter with all mandatory commitments. Step 4 shows the commission transparency with correct calculation (10,000 DZD price with 1,500 DZD commission and 8,500 DZD provider earnings). The form successfully submits to the API and shows a success message. All requirements have been met and the form is now fully functional."
+  - agent: "main"
+    message: "Significantly extended ProviderDashboard.jsx with comprehensive functionality: (1) Real-time API integration for stats, profile, activities, and bookings (2) Commission transparency calculations by provider type (3) Activity creation modal with detailed form and commission preview (4) Profile management modal (5) Booking status management (6) Comprehensive UI components for all provider operations (7) Fallback handling for API failures (8) Created necessary UI components (Select) and installed @radix-ui/react-select dependency. Dashboard is now a fully functional provider management interface but needs backend testing to verify API integrations work correctly."
