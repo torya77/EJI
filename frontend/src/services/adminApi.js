@@ -147,9 +147,10 @@ class AdminApiService {
 
 // Service pour l'API Prestataires
 class ProviderApiService {
+  // For development purposes, set a default provider token if none exists
   constructor() {
     this.baseURL = API_BASE_URL;
-    this.token = localStorage.getItem('provider_token');
+    this.token = localStorage.getItem('provider_token') || 'provider_1_token'; // Default token for development
   }
 
   // Headers par défaut avec authentification
