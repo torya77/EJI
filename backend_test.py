@@ -893,7 +893,7 @@ class TestBackendAPI(unittest.TestCase):
     def test_get_provider_notifications(self):
         """Test getting notifications for provider"""
         print("Running test_get_provider_notifications")
-        response = requests.get(f"{BASE_URL}/notifications", headers=self.provider_headers)
+        response = requests.get(f"{BASE_URL}/notifications/", headers=self.provider_headers)
         print(f"Status code: {response.status_code}")
         print(f"Response: {response.json()}")
         self.assertEqual(response.status_code, 200)
