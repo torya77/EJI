@@ -37,77 +37,181 @@ import {
 
 const ProviderDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState(null);
+  const [profile, setProfile] = useState(null);
+  const [activities, setActivities] = useState([]);
+  const [bookings, setBookings] = useState([]);
+  const [showCreateActivity, setShowCreateActivity] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+  const [newActivity, setNewActivity] = useState({
+    name: '',
+    description: '',
+    category: '',
+    price: '',
+    duration: '',
+    max_participants: '',
+    location: '',
+    images: []
+  });
+  const [profileUpdate, setProfileUpdate] = useState({
+    business_name: '',
+    description: '',
+    phone: '',
+    email: '',
+    address: '',
+    city: '',
+    website: ''
+  });
 
-  // Mock data for provider dashboard
-  const stats = {
+  const { toast } = useToast();
+
+  // Commission rates by provider type
+  const commissionRates = {
+    'guide_local': 15,
+    'restaurant': 12,
+    'hebergement': 10,
+    'transport': 15,
+    'artisan': 8,
+    'organisateur_evenements': 15
+  };
+
+  useEffect(() => {
+    loadDashboardData();
+  }, []);
+
+  const loadDashboardData = async () => {
+    try {
+      setLoading(true);
+      const [dashboardStats, profileData, activitiesData, bookingsData] = await Promise.all([
+        providerApi.getDashboardStats(),
+        providerApi.getProfile(),
+        providerApi.getMyActivities(),
+        providerApi.getBookings()
+      ]);
+
+      setStats(dashboardStats);
+      setProfile(profileData);
+      setProfileUpdate(profileData);
+      setActivities(activitiesData);
+      setBookings(bookingsData);
+    } catch (error) {
+      console.error('Erreur lors du chargement des données:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de charger les données du tableau de bord",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCreateActivity = async () => {
+    try {
+      const activityData = {
+        ...newActivity,
+        price: parseFloat(newActivity.price),
+        duration: parseInt(newActivity.duration),
+        max_participants: parseInt(newActivity.max_participants)
+      };
+
+      await providerApi.createActivity(activityData);
+      
+      toast({
+        title: "Succès",
+        description: "Activité créée avec succès",
+      });
+
+      setShowCreateActivity(false);
+      setNewActivity({
+        name: '',
+        description: '',
+        category: '',
+        price: '',
+        duration: '',
+        max_participants: '',
+        location: '',
+        images: []
+      });
+      
+      loadDashboardData();
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de créer l'activité",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleUpdateProfile = async () => {
+    try {
+      await providerApi.updateProfile(profileUpdate);
+      
+      toast({
+        title: "Succès",
+        description: "Profil mis à jour avec succès",
+      });
+
+      setShowProfile(false);
+      loadDashboardData();
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de mettre à jour le profil",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleBookingStatusUpdate = async (bookingId, status) => {
+    try {
+      await providerApi.updateBookingStatus(bookingId, status);
+      
+      toast({
+        title: "Succès",
+        description: "Statut de la réservation mis à jour",
+      });
+
+      loadDashboardData();
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de mettre à jour le statut",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const calculateCommission = (price, providerType) => {
+    const rate = commissionRates[providerType] || 15;
+    const commission = (price * rate) / 100;
+    return {
+      commission,
+      earnings: price - commission,
+      rate
+    };
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 pt-8 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Chargement du tableau de bord...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Fallback data if API fails
+  const fallbackStats = {
     revenue: { value: 45230, growth: +12, currency: 'DZD' },
     bookings: { value: 28, growth: +8 },
     rating: { value: 4.8, total: 156 },
     clients: { value: 342, growth: +15 }
   };
-
-  const recentBookings = [
-    {
-      id: 'BK001',
-      service: 'Visite Guidée Casbah',
-      client: 'Sarah Martin',
-      date: '2025-07-20',
-      time: '10:00',
-      status: 'confirmé',
-      amount: 1800,
-      guests: 2
-    },
-    {
-      id: 'BK002',
-      service: 'Restaurant Le Tantra',
-      client: 'Ahmed Bensaid',
-      date: '2025-07-21',
-      time: '19:30',
-      status: 'en_attente',
-      amount: 3200,
-      guests: 4
-    },
-    {
-      id: 'BK003',
-      service: 'Excursion Sahara',
-      client: 'Marie Dubois',
-      date: '2025-08-05',
-      time: '06:00',
-      status: 'confirmé',
-      amount: 15000,
-      guests: 2
-    }
-  ];
-
-  const services = [
-    {
-      id: 'SV001',
-      name: 'Visite Guidée de la Casbah',
-      type: 'Événement',
-      price: 1800,
-      status: 'actif',
-      bookings: 23,
-      rating: 4.9
-    },
-    {
-      id: 'SV002',
-      name: 'Restaurant Le Tantra',
-      type: 'Restaurant',
-      price: 2500,
-      status: 'actif',
-      bookings: 45,
-      rating: 4.7
-    },
-    {
-      id: 'SV003',
-      name: 'Atelier Poterie',
-      type: 'Expérience',
-      price: 3500,
-      status: 'pause',
-      bookings: 12,
-      rating: 4.8
-    }
-  ];
 
   const getStatusColor = (status) => {
     switch (status) {
