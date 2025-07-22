@@ -179,8 +179,8 @@ const LandingPage = () => {
             🏛️ Découvrez l'Algérie Authentique
           </Badge>
           
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-            <span className="text-green-400">EJI</span> - Explore
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+            <span className="bg-gradient-to-r from-green-400 via-red-500 to-green-400 bg-clip-text text-transparent">EJI</span> - Explore
             <br />
             Journey Intelligence
           </h1>
